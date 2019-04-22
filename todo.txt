@@ -1,0 +1,26 @@
+SRGUI Todo List
+-----------------
+
+	1. Rearrangle headers (this started as a single h/cpp pair)
+	2. Finish implementing click-based repaint flags
+	3. srCheckbox.
+	4. design srRadioGroup & srRadioBox.
+	(somewhere in here textfields, window resizing, caption buttons, and so much more)
+
+Notes
+-------
+
+	* still need to have a look at layout managing.
+	   - some kind necessary for controls that can change shape in a way
+	     that moves other controls around (like Dear ImGui's Collapsing Header)
+
+	* should look into menu bar object layout
+		^ how to implement menus is going to be tricky. 
+		- a srMenuBar contains basically a list of srMenu.
+		- srMenu has a surface like a srWindow and can redraw on changing item attributes
+		- all access to items is through the srMenu.
+			^- there is NO srMenuItem
+		- thru srMenu an item can be given an action (display submenu, un/checked, funcall)
+		- srMenu is quite like a srWindow that will never move and only contains stacked 
+			selectable items.
+
