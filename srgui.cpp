@@ -10,6 +10,7 @@
 #include "srWindow.h"
 #include "srDrawSurface.h"
 #include "srButton.h"
+#include "srCheckbox.h"
 
 namespace srgui {
 
@@ -51,6 +52,8 @@ void setDefaultStyle()
 	laf.buttonBackground = 0xc0c0be;
 	laf.buttonRounding = 0;
 	laf.buttonOutline = 0x3030A0;
+
+	laf.textBackground = 0xF0F0F0;
 	return;
 }
 
@@ -147,7 +150,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		if( W )
 		for(int i = 0; i < W->getNumChildren(); ++i)
 		{
-			if( ! W->point_in_child(i, {x,y} ) ) break;
+			if( ! W->point_in_child(i, {x,y} ) ) continue;
 		
 			srgui_data.mouse_over.child = W->getChild(i);
 			if( srgui_data.mouse_over.child->getFlags() & SR_CF_REPAINT_ON_HOVER )
@@ -179,9 +182,10 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			{
 				srIEvent* c = dynamic_cast<srIEvent*>(srgui_data.mouse_l_down.child);
 				if( c ) c->raiseClickEvent();
+				else puts("It wasn't clickable!");
 			}
 			if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
-				&& (srgui_data.mouse_l_down.child->getFlags() & SR_CF_REPAINT_ON_LBUTTON_STATE) )
+				&& (srgui_data.mouse_l_down.child->getFlags() & (SR_CF_REPAINT_ON_LEFT_CLICK|SR_CF_REPAINT_ON_LBUTTON_STATE)) )
 			{
 				srgui_data.mouse_l_down.window->setDirty();
 			}
@@ -287,6 +291,57 @@ void srButton::draw(const srDrawInfo& info)
 	return;
 }
 
+void srCheckbox::setArea(const srRect& r)
+{
+	area = r;
+	srControl* c = parent;
+	if( c )
+	{
+		while( c->getParent() ) c = c->getParent();
+		((srWindow*)c)->setDirty();
+	}
+	return;
+}
+
+void srCheckbox::setText(const std::string& s)
+{
+	text = s;
+	if( ! text_layout ) 
+	{
+		text_layout = new srPangoTextLayout;
+		//text_layout->setFont("Sans 15");
+	}
+	text_layout->setText(text);
+	return;
+}
+
+void srCheckbox::draw(const srDrawInfo& info)
+{
+	srDrawSurface* surf = info.surface;
+
+	uint32_t outlineColor = (srgui_data.UIStyle.buttonStyle & SR_SF_OUTLINE) ? 
+					srgui_data.UIStyle.buttonOutline : srgui_data.UIStyle.buttonBackground;
+
+	surf->setColor(srgui_data.UIStyle.textBackground);
+	surf->drawRectangle({area.x, area.y, 15, 15});
+
+	if( isChecked )
+	{
+		surf->setColor(0);
+		surf->drawLine(area.x+11, area.y+2, area.x+8, area.y+13);
+		surf->drawLine(area.x+8, area.y+13, area.x+3, area.y+7);
+	}
+
+	surf->setColor(srgui_data.UIStyle.buttonBackground);
+
+	srRect r;
+	text_layout->getExtents(r);
+	surf->setColor(0);
+	surf->drawTextLayout({(int)(area.x+20), (int)(area.y)}, text_layout);
+
+	return;
+}
+
 void srWindow::draw(const srDrawInfo& info)
 {
 	surface->setColor(srgui_data.UIStyle.windowBackground);
@@ -306,7 +361,7 @@ void srWindow::draw(const srDrawInfo& info)
 		} else {
 			surface->setColor(srgui_data.UIStyle.windowCaptionColor1);
 		}
-		
+	
 		surface->drawTopRoundedRect({srgui_data.UIStyle.windowCaptionOffset.x, srgui_data.UIStyle.windowCaptionOffset.y,
 					area.width - srgui_data.UIStyle.windowCaptionOffset.x, srgui_data.UIStyle.windowCaptionHeight},
 						srgui_data.UIStyle.windowCaptionRounding);

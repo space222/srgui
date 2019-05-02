@@ -7,6 +7,7 @@
 #include "srWindow.h"
 #include "srDrawSurface.h"
 #include "srButton.h"
+#include "srCheckbox.h"
 
 bool MainRunning = true;
 
@@ -23,9 +24,12 @@ int main(int argc, char** args)
 	srgui::initialize();
 
 	srgui::srWindow* srwin = srgui::CreateWindow({100,150,300,300}, nullptr, "Window Test 1");
+	srgui::srCheckbox* chk = new srgui::srCheckbox();
+	srwin->addChild(chk);
 	srgui::srButton* but1 = new srgui::srButton();
 	srwin->addChild(but1);
-
+	chk->setArea({ 50, 110, 100, 20 });
+	chk->setText("This is checkbox");
 	but1->setArea({ 50, 50, 100, 50 });
 	but1->setText("clicky");
 	but1->onClick = []{ std::puts("He clicked me!"); };
