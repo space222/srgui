@@ -11,6 +11,7 @@
 #include "srDrawSurface.h"
 #include "srButton.h"
 #include "srCheckbox.h"
+#include "srLabel.h"
 
 namespace srgui {
 
@@ -182,7 +183,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			{
 				srIEvent* c = dynamic_cast<srIEvent*>(srgui_data.mouse_l_down.child);
 				if( c ) c->raiseClickEvent();
-				else puts("It wasn't clickable!");
+				//else puts("It wasn't clickable!");
 			}
 			if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
 				&& (srgui_data.mouse_l_down.child->getFlags() & (SR_CF_REPAINT_ON_LEFT_CLICK|SR_CF_REPAINT_ON_LBUTTON_STATE)) )
@@ -339,6 +340,42 @@ void srCheckbox::draw(const srDrawInfo& info)
 	surf->setColor(0);
 	surf->drawTextLayout({(int)(area.x+20), (int)(area.y)}, text_layout);
 
+	return;
+}
+
+void srLabel::draw(const srDrawInfo& info)
+{
+	srDrawSurface* surf = info.surface;
+
+	srRect r;
+	text_layout->getExtents(r);
+	surf->setColor(srgui_data.UIStyle.textColor);
+	surf->drawTextLayout({(int)(area.x+20), (int)(area.y)}, text_layout);
+
+	return;
+}
+
+void srLabel::setText(const std::string& s)
+{
+	text = s;
+	if( ! text_layout ) 
+	{
+		text_layout = new srPangoTextLayout;
+		//text_layout->setFont("Sans 15");
+	}
+	text_layout->setText(text);
+	return;
+}
+
+void srLabel::setArea(const srRect& r)
+{
+	area = r;
+	srControl* c = parent;
+	if( c )
+	{
+		while( c->getParent() ) c = c->getParent();
+		((srWindow*)c)->setDirty();
+	}
 	return;
 }
 

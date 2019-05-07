@@ -7,21 +7,18 @@
 
 namespace srgui {
 
-class srButton : public srControl, public srIEvent
+class srLabel : public srControl
 {
 public:
-	srButton() : text_layout(nullptr) { flags = SR_CF_REPAINT_ON_HOVER | SR_CF_REPAINT_ON_LBUTTON_STATE; }
+	srLabel() : text_layout(nullptr) { flags = 0; }
 	virtual void draw(const srDrawInfo&) override;
 	virtual void setArea(const srRect& r) override;
 	virtual void getArea(srRect& r) override { r = area; return; }
-	virtual srControlType type() override { return SR_CT_BUTTON; }
+	virtual srControlType type() override { return SR_CT_LABEL; }
 
 	virtual void setText(const std::string& str);
 
 	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
-
-	virtual void raiseClickEvent() override { if(onClick) onClick(); return; }
-	std::function<void()> onClick;
 
 protected:
 	std::string text;

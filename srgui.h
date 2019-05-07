@@ -23,7 +23,7 @@ struct srPoint
 	}
 };
 
-enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIOBUTTON };
+enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIOBUTTON, SR_CT_LABEL };
 enum srDrawInfoFlags { SR_DIF_FOCUS = 1, SR_DIF_MOUSE_OVER = 2, 
 		       SR_DIF_MOUSE_LEFT = 4, SR_DIF_MOUSE_MIDDLE = 8,
 		       SR_DIF_MOUSE_RIGHT = 16 };
@@ -104,6 +104,7 @@ struct srLookAndFeel
 
 	uint32_t itemSelectionColor;
 
+	uint32_t textColor;
 	uint32_t textBackground;
 };
 
