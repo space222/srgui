@@ -53,6 +53,25 @@ void srRadioButton::raiseClickEvent()
 	return;
 }
 
+void srRadioButton::setChecked(bool v)
+{
+	if( isChecked == v ) return;
+	isChecked = v;
+	if( parent ) 
+	{
+		srControl* c = c->getParent();
+		while( c->getParent() ) c = c->getParent();
+		srWindow* win = dynamic_cast<srWindow*>(c);
+		win->setDirty();
+	}
+
+	if( r_group )
+	{
+		if( isChecked ) r_group->activateButton(this);
+	}
+	return;
+}
+
 void srRadioButton::setText(const std::string& s)
 {
 	text = s;

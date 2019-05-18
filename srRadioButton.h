@@ -29,20 +29,7 @@ public:
 	virtual void raiseClickEvent() override;
 
 	virtual bool checked() { return isChecked; }
-	virtual void setChecked(bool v)
-	{
-		if( isChecked == v ) return;
-		isChecked = v;
-		if( !parent ) return;
-
-		srControl* c = c->getParent();
-		while( c->getParent() ) c = c->getParent();
-
-		srWindow* win = dynamic_cast<srWindow*>(c);
-		win->setDirty();
-
-		return;
-	}
+	virtual void setChecked(bool v);
 
 protected:
 	std::string text;
@@ -69,3 +56,5 @@ protected:
 };
 
 } //end of namespace srgui
+
+
