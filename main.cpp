@@ -33,6 +33,7 @@ int main(int argc, char** args)
 	srwin->addChild(mcl);
 	mcl->setArea({ 270, 10, 20, 20 });
 	mcl->setText("X");
+	mcl->onClick = []{ exit(0); };
 	chk->setArea({ 50, 110, 100, 20 });
 	chk->setText("This is checkbox");
 	but1->setArea({ 50, 50, 100, 50 });

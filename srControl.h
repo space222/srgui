@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include "srgui.h"
 
 namespace srgui {
 

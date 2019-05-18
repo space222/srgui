@@ -23,6 +23,7 @@ struct srPoint
 	}
 };
 
+
 enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIOBUTTON, SR_CT_LABEL };
 enum srDrawInfoFlags { SR_DIF_FOCUS = 1, SR_DIF_MOUSE_OVER = 2, 
 		       SR_DIF_MOUSE_LEFT = 4, SR_DIF_MOUSE_MIDDLE = 8,
@@ -117,6 +118,24 @@ void generateDrawList(std::vector<srRenderTask>&);
 srWindow* CreateWindow(const srRect& extents, void* userData, const std::string& title);
 /* the most raw way to send an event. pass zero for unused data parameters */
 void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
+
+
+struct system_data 
+{
+	std::vector<srWindow*> windows;
+	srInputTracker mouse_over;
+	srInputTracker mouse_l_down;
+	srInputTracker mouse_r_down;
+	srInputTracker mouse_m_down;
+	srInputTracker mouse_l_up;
+	srInputTracker mouse_r_up;
+	srInputTracker mouse_m_up;
+
+	bool caption_move;
+
+	srPoint mouse_pos;
+	srLookAndFeel UIStyle;
+};
 
 }; //end of srgui namespace
 
