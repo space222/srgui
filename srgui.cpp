@@ -49,7 +49,7 @@ void setDefaultStyle()
 	laf.windowCaptionTextColor = 0xF0F0F0;
 	laf.windowCaptionHeight = 40;
 	laf.windowCaptionRounding = 15;
-
+	laf.windowCaptionOffset = {0,0};
 	laf.buttonBackground = 0xc0c0be;
 	laf.buttonRounding = 0;
 	laf.buttonOutline = 0x3030A0;
@@ -90,8 +90,10 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			}
 		}
 
-		if( button == 1 )
+		if( button == 1 && !srgui_data.mouse_over.child )
 		{    // we can only end up clicking on the top level window
+		     // if we're not clicking a control, see if its time to
+		     // drag by the caption
 			srgui_data.mouse_l_down.window = srgui_data.windows[0];
 			srRect r, c;
 			srgui_data.windows[0]->getArea(r);
@@ -407,7 +409,10 @@ void srWindow::draw(const srDrawInfo& info)
 		caption_layout->setText(title);
 		surface->setColor(srgui_data.UIStyle.windowCaptionTextColor);
 		int a = srgui_data.UIStyle.windowCaptionRounding;
-		surface->drawTextLayout(srgui_data.UIStyle.windowCaptionOffset + srPoint{a,0} , caption_layout);
+		srRect r1;
+		caption_layout->getExtents(r1);
+		int b = srgui_data.UIStyle.windowCaptionHeight/2 - r1.height/2;
+		surface->drawTextLayout(srgui_data.UIStyle.windowCaptionOffset + srPoint{a+3,b}, caption_layout);
 	}
 
 	

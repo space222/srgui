@@ -29,6 +29,10 @@ int main(int argc, char** args)
 	srwin->addChild(chk);
 	srgui::srButton* but1 = new srgui::srButton();
 	srwin->addChild(but1);
+	srgui::srButton* mcl = new srgui::srButton();
+	srwin->addChild(mcl);
+	mcl->setArea({ 270, 10, 20, 20 });
+	mcl->setText("X");
 	chk->setArea({ 50, 110, 100, 20 });
 	chk->setText("This is checkbox");
 	but1->setArea({ 50, 50, 100, 50 });
@@ -36,13 +40,10 @@ int main(int argc, char** args)
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
 	srgui::srWindow* win2 = srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2");
 
-	std::puts("Got here");
 	srgui::srLabel* lbl = new srgui::srLabel();
 	win2->addChild(lbl);
 	lbl->setArea({ 50, 132, 100, 20});
-	std::puts("also here");
 	lbl->setText("Labels! Yay!");
-	std::puts("all the way baby");
 	srgui::CreateWindow({ 500,500,200,200 }, nullptr, "Banana 3");
 
 	while( MainRunning ) 

@@ -13,6 +13,8 @@ Notes
 	* still need to have a look at layout managing.
 	   - some kind necessary for controls that can change shape in a way
 	     that moves other controls around (like Dear ImGui's Collapsing Header)
+	   - also affected by resize (especially controls that should stay relative
+			 to border, like caption decorator buttons)
 
 	* should look into menu bar object layout
 		^ how to implement menus is going to be tricky. 
