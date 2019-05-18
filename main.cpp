@@ -9,6 +9,7 @@
 #include "srButton.h"
 #include "srCheckbox.h"
 #include "srLabel.h"
+#include "srRadioButton.h"
 
 bool MainRunning = true;
 
@@ -24,27 +25,41 @@ int main(int argc, char** args)
 
 	srgui::initialize();
 
-	srgui::srWindow* srwin = srgui::CreateWindow({100,150,300,300}, nullptr, "Window Test 1");
+	srgui::srWindow* srwin = srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1");
 	srgui::srCheckbox* chk = new srgui::srCheckbox();
 	srwin->addChild(chk);
 	srgui::srButton* but1 = new srgui::srButton();
 	srwin->addChild(but1);
 	srgui::srButton* mcl = new srgui::srButton();
 	srwin->addChild(mcl);
+
 	mcl->setArea({ 270, 10, 20, 20 });
 	mcl->setText("X");
 	mcl->onClick = []{ exit(0); };
 	chk->setArea({ 50, 110, 100, 20 });
-	chk->setText("This is checkbox");
+	chk->setText("This is <span color='blue'>checkbox</span>");
 	but1->setArea({ 50, 50, 100, 50 });
 	but1->setText("clicky");
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
 	srgui::srWindow* win2 = srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2");
 
+	srgui::srRadioButton* rb1 = new srgui::srRadioButton();
+	srgui::srRadioButton* rb2 = new srgui::srRadioButton();
+	srgui::srRadioButton* rb3 = new srgui::srRadioButton();
 	srgui::srLabel* lbl = new srgui::srLabel();
 	win2->addChild(lbl);
+	win2->addChild(rb1);
+	win2->addChild(rb2); win2->addChild(rb3);
 	lbl->setArea({ 50, 132, 100, 20});
-	lbl->setText("Labels! Yay!");
+	lbl->setText("Labels! <b>Yay!</b>");
+	rb1->setArea({ 50, 175, 100, 20});
+	rb1->setText("radio b1!");
+	rb2->setArea({ 50, 200, 100, 20});
+	rb2->setText("radio b2!");
+	rb3->setArea({ 50, 227, 100, 20});
+	rb3->setText("radio b3!");
+	srgui::srRadioGroup* rg = new srgui::srRadioGroup{ rb1, rb2, rb3  };
+
 	srgui::CreateWindow({ 500,500,200,200 }, nullptr, "Banana 3");
 
 	while( MainRunning ) 

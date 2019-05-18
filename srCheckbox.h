@@ -14,7 +14,7 @@ public:
 	virtual void draw(const srDrawInfo&) override;
 	virtual void setArea(const srRect& r) override;
 	virtual void getArea(srRect& r) override { r = area; return; }
-	virtual srControlType type() override { return SR_CT_BUTTON; }
+	virtual srControlType type() override { return SR_CT_CHECKBOX; }
 
 	virtual void setText(const std::string& str);
 

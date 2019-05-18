@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <cstdio>
+#include <cstdlib>
 #include <functional>
 #include <cairo.h>
 #include "srgui.h"
@@ -34,7 +36,19 @@ void srPangoTextLayout::getExtents(srRect& r)
 
 void srPangoTextLayout::setText(const std::string& text)
 {
-	pango_layout_set_text(layout, text.c_str(), -1);
+	PangoAttrList* attrlist = nullptr;
+	char* output = nullptr;
+	if( !pango_parse_markup(text.c_str(), text.size(), 0, &attrlist, &output, nullptr, nullptr) )
+	{
+		pango_layout_set_attributes(layout, nullptr);
+		pango_layout_set_text(layout, text.c_str(), -1);
+	} else {
+		pango_layout_set_attributes(layout, attrlist);
+		pango_layout_set_text(layout, output, -1);
+		pango_attr_list_unref(attrlist);
+		std::free(output);
+	}
+	
 	return;
 }
 
@@ -66,6 +80,21 @@ void srCairoDrawSurface::drawTextLayout(const srPoint& p, srTextLayout* ptl)
 {
 	cairo_move_to(ct, p.x, p.y);
 	pango_cairo_show_layout(ct, ((srPangoTextLayout*) ptl)->getPangoLayout());
+	return;
+}
+
+void srCairoDrawSurface::drawCircle(const srPoint& p, float radius)
+{
+	cairo_arc(ct, p.x, p.y, radius, 0, 6.28f);
+	cairo_fill(ct);
+	return;
+}
+
+void srCairoDrawSurface::outlineCircle(const srPoint& p, float radius, float linewidth)
+{
+	cairo_arc(ct, p.x, p.y, radius, 0, 6.28f);
+	cairo_set_line_width(ct, linewidth);
+	cairo_stroke(ct);
 	return;
 }
 

@@ -11,7 +11,7 @@ namespace srgui {
 class srWindow : public srControl, public srContainer
 {
 public:
-	virtual void setTitle(const std::string& ttle) { title = ttle; isdirty = true; }
+	virtual void setTitle(const std::string& ttle);
 
 	virtual void setArea(const srRect& r) override 
 	{ 

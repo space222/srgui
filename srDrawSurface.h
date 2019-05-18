@@ -31,6 +31,9 @@ public:
 	/* for debugging only */
 	virtual void write_to_png(const std::string&) =0;
 
+	virtual void outlineCircle(const srPoint& p, float radius, float linewidth = 2.0f) =0;
+	virtual void drawCircle(const srPoint& p, float radius) =0;
+
 	virtual void drawRectangle(const srRect& r) =0;
 	virtual void drawRoundRectangle(const srRect& r, int rounding) =0;
 	virtual void drawTopRoundedRect(const srRect& r, int rounding) =0;
@@ -81,6 +84,8 @@ public:
 
 	virtual void setSize(int Width, int Height) override;
 
+	virtual void outlineCircle(const srPoint& p, float radius, float linewidth = 2.0f);
+	virtual void drawCircle(const srPoint& p, float radius);
 	virtual void drawRectangle(const srRect& r);
 	virtual void drawRoundRectangle(const srRect& r, int rounding);
 	virtual void drawTopRoundedRect(const srRect& r, int rounding);

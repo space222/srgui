@@ -31,6 +31,18 @@ srWindow::srWindow(int w, int h, srDrawSurface* draw)
 	caption_layout = nullptr;
 }
 
+void srWindow::setTitle(const std::string& t)
+{
+	title = t;
+	if( ! caption_layout )
+	{
+		caption_layout = new srPangoTextLayout;
+		caption_layout->setText(title);
+	}
+
+	return;
+}
+
 void srWindow::draw(const srDrawInfo& info)
 {
 	surface->setColor(srgui_data.UIStyle.windowBackground);
@@ -55,8 +67,11 @@ void srWindow::draw(const srDrawInfo& info)
 					area.width - srgui_data.UIStyle.windowCaptionOffset.x, srgui_data.UIStyle.windowCaptionHeight},
 						srgui_data.UIStyle.windowCaptionRounding);
 		
-		if( ! caption_layout ) caption_layout = new srPangoTextLayout;
-		caption_layout->setText(title);
+		if( ! caption_layout )
+		{
+			caption_layout = new srPangoTextLayout;
+			caption_layout->setText(title);
+		}
 		surface->setColor(srgui_data.UIStyle.windowCaptionTextColor);
 		int a = srgui_data.UIStyle.windowCaptionRounding;
 		srRect r1;
