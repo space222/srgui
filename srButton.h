@@ -12,8 +12,6 @@ class srButton : public srControl, public srIEvent
 public:
 	srButton() : text_layout(nullptr) { flags = SR_CF_REPAINT_ON_HOVER | SR_CF_REPAINT_ON_LBUTTON_STATE; }
 	virtual void draw(const srDrawInfo&) override;
-	virtual void setArea(const srRect& r) override;
-	virtual void getArea(srRect& r) override { r = area; return; }
 	virtual srControlType type() override { return SR_CT_BUTTON; }
 
 	virtual void setText(const std::string& str);

@@ -15,8 +15,6 @@ class srRadioButton : public srControl, public srIEvent
 public:
 	srRadioButton() : text_layout(nullptr), isChecked(false) { flags = SR_CF_REPAINT_ON_LEFT_CLICK; }
 	virtual void draw(const srDrawInfo&) override;
-	virtual void setArea(const srRect& r) override;
-	virtual void getArea(srRect& r) override { r = area; return; }
 	virtual srControlType type() override { return SR_CT_RADIOBUTTON; }
 
 	// the setter is mainly for use of srRadioGroup.

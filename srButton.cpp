@@ -12,18 +12,6 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
-void srButton::setArea(const srRect& r)
-{
-	area = r;
-	srControl* c = parent;
-	if( c )
-	{
-		while( c->getParent() ) c = c->getParent();
-		((srWindow*)c)->setDirty();
-	}
-	return;
-}
-
 void srButton::setText(const std::string& s)
 {
 	text = s;

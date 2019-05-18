@@ -28,20 +28,8 @@ class srControl
 public:
 	virtual uint64_t getFlags() { return flags; }
 	virtual void setFlags(uint32_t) =0;
-	virtual void setArea(const srRect& r) 
-	{
-		/*area = r;
-		srControl* c = parent;
-		if( c )
-		{
-			while( c->getParent() ) c = c->getParent();
-			srWindow* w = dynamic_cast<srWindow*>(c);
-			if(w) w->setDirty();
-		}*/
-		return;
-	}
-
-	virtual void getArea(srRect& r) =0;// { r = area; return; }
+	virtual void setArea(const srRect& r);
+	virtual void getArea(srRect& r) { r = area; return; }
 
 	virtual void draw(const srDrawInfo&) =0;
 	virtual srControlType type() =0;

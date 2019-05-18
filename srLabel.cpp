@@ -34,19 +34,6 @@ void srLabel::setText(const std::string& s)
 	return;
 }
 
-void srLabel::setArea(const srRect& r)
-{
-	area = r;
-	srControl* c = parent;
-	if( c )
-	{
-		while( c->getParent() ) c = c->getParent();
-		((srWindow*)c)->setDirty();
-	}
-	return;
-}
-
-
 } //end of srgui namespace
 
 

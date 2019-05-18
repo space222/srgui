@@ -53,18 +53,6 @@ void srRadioButton::raiseClickEvent()
 	return;
 }
 
-void srRadioButton::setArea(const srRect& r)
-{
-	area = r;
-	srControl* c = parent;
-	if( c )
-	{
-		while( c->getParent() ) c = c->getParent();
-		((srWindow*)c)->setDirty();
-	}
-	return;
-}
-
 void srRadioButton::setText(const std::string& s)
 {
 	text = s;
