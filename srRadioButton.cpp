@@ -46,10 +46,10 @@ void srRadioGroup::activateButton(srRadioButton* b)
 	return;
 }
 
-void srRadioButton::raiseClickEvent()
+void srRadioButton::raiseClickEvent(const srEventInfo& ei)
 {
 	isChecked = true;
-	if( r_group) r_group->activateButton(this);
+	if( r_group ) r_group->activateButton(this);
 	return;
 }
 
@@ -59,16 +59,12 @@ void srRadioButton::setChecked(bool v)
 	isChecked = v;
 	if( parent ) 
 	{
-		srControl* c = c->getParent();
+		srControl* c = parent;
 		while( c->getParent() ) c = c->getParent();
 		srWindow* win = dynamic_cast<srWindow*>(c);
-		win->setDirty();
+		if( win ) win->setDirty();
 	}
 
-	if( r_group )
-	{
-		if( isChecked ) r_group->activateButton(this);
-	}
 	return;
 }
 

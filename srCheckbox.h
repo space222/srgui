@@ -18,7 +18,7 @@ public:
 
 	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
 
-	virtual void raiseClickEvent() override { isChecked = !isChecked; return; }
+	virtual void raiseClickEvent(const srEventInfo& ei) override { isChecked = !isChecked; return; }
 
 	virtual bool checked() { return isChecked; }
 	virtual void setChecked(bool v)
@@ -31,7 +31,7 @@ public:
 		while( c->getParent() ) c = c->getParent();
 
 		srWindow* win = dynamic_cast<srWindow*>(c);
-		win->setDirty();
+		if( win ) win->setDirty();
 
 		return;
 	}

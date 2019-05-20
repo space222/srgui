@@ -27,9 +27,11 @@ void srButton::setText(const std::string& s)
 void srButton::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;
+	srPoint origin = srPoint{area.x, area.y} + info.parent_offset;
+	srRect newarea{ origin.x, origin.y, area.width, area.height };
 
 	surf->setColor(srgui_data.UIStyle.buttonBackground);
-	surf->drawRoundRectangle(area, srgui_data.UIStyle.buttonRounding);
+	surf->drawRoundRectangle(newarea, srgui_data.UIStyle.buttonRounding);
 
 	uint32_t outlineColor = (srgui_data.UIStyle.buttonStyle & SR_SF_OUTLINE) ? 
 					srgui_data.UIStyle.buttonOutline : srgui_data.UIStyle.buttonBackground;
@@ -41,29 +43,29 @@ void srButton::draw(const srDrawInfo& info)
 		} else {
 			surf->setColor(outlineColor);
 		}
-		surf->outlineRoundRectangle(area, srgui_data.UIStyle.buttonRounding);
+		surf->outlineRoundRectangle(newarea, srgui_data.UIStyle.buttonRounding);
 	} else {
 		if( info.flags & SR_DIF_MOUSE_LEFT ) {
 			surf->setColor(outlineColor - 0x222222);
-			surf->drawLine(area.x, area.y, area.x + area.width, area.y);
-			surf->drawLine(area.x, area.y, area.x, area.y+area.height);
+			surf->drawLine(newarea.x, newarea.y, newarea.x + newarea.width, newarea.y);
+			surf->drawLine(newarea.x, newarea.y, newarea.x, newarea.y+newarea.height);
 			surf->setColor(outlineColor + 0x222222);
-			surf->drawLine(area.x, area.y+area.height, area.x+area.width, area.y+area.height);
-			surf->drawLine(area.x+area.width, area.y, area.x+area.width, area.y+area.height);
+			surf->drawLine(newarea.x, newarea.y+newarea.height, newarea.x+newarea.width, newarea.y+newarea.height);
+			surf->drawLine(newarea.x+newarea.width, newarea.y, newarea.x+newarea.width, newarea.y+newarea.height);
 		} else if( info.flags & SR_DIF_MOUSE_OVER ) {
 			surf->setColor(outlineColor + 0x222222);
-			surf->drawLine(area.x, area.y, area.x + area.width, area.y);
-			surf->drawLine(area.x, area.y, area.x, area.y+area.height);
+			surf->drawLine(newarea.x, newarea.y, newarea.x + newarea.width, newarea.y);
+			surf->drawLine(newarea.x, newarea.y, newarea.x, newarea.y+newarea.height);
 			surf->setColor(outlineColor - 0x222222);
-			surf->drawLine(area.x, area.y+area.height, area.x+area.width, area.y+area.height);
-			surf->drawLine(area.x+area.width, area.y, area.x+area.width, area.y+area.height);
+			surf->drawLine(newarea.x, newarea.y+newarea.height, newarea.x+newarea.width, newarea.y+newarea.height);
+			surf->drawLine(newarea.x+newarea.width, newarea.y, newarea.x+newarea.width, newarea.y+newarea.height);
 		} 
 	}
 
 	srRect r;
 	text_layout->getExtents(r);
 	surf->setColor(0);
-	surf->drawTextLayout({(int)(area.x+r.width/2), (int)(area.y)}, text_layout);
+	surf->drawTextLayout({(int)(newarea.x+r.width/2), (int)(newarea.y)}, text_layout);
 
 	return;
 }

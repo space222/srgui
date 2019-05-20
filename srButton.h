@@ -18,7 +18,7 @@ public:
 
 	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
 
-	virtual void raiseClickEvent() override { if(onClick) onClick(); return; }
+	virtual void raiseClickEvent(const srEventInfo& ei) override { if(onClick) onClick(); return; }
 	std::function<void()> onClick;
 
 protected:

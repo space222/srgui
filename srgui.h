@@ -21,10 +21,16 @@ struct srPoint
 	{
 		return { x + p.x, y + p.y };
 	}
+	srPoint operator-(const srPoint& p)
+	{
+		return { x - p.x, y - p.y };
+	}
 };
 
 
-enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIOBUTTON, SR_CT_LABEL };
+enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIOBUTTON, SR_CT_LABEL,
+			SR_CT_SPINNER, SR_CT_TEXTFIELD
+	 };
 enum srDrawInfoFlags { SR_DIF_FOCUS = 1, SR_DIF_MOUSE_OVER = 2, 
 		       SR_DIF_MOUSE_LEFT = 4, SR_DIF_MOUSE_MIDDLE = 8,
 		       SR_DIF_MOUSE_RIGHT = 16 };
@@ -37,6 +43,7 @@ struct srDrawInfo
 	srDrawSurface* surface;
 	uint32_t flags;
 	srPoint mouse_rel;
+	srPoint parent_offset;
 };
 
 /* srControlFlags: for the moment, the top 32bits is reserved for the system and currently used only

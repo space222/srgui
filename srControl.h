@@ -15,10 +15,15 @@ public:
 	virtual uint32_t getNumChildren() =0;
 };
 
+struct srEventInfo
+{
+	srPoint mouse;
+};
+
 class srIEvent
 {
 public:
-	virtual void raiseClickEvent() {};
+	virtual void raiseClickEvent(const srEventInfo&) {};
 
 };
 
@@ -26,6 +31,7 @@ public:
 class srControl
 {
 public:
+	srControl() : parent(nullptr) { }
 	virtual uint64_t getFlags() { return flags; }
 	virtual void setFlags(uint32_t) =0;
 	virtual void setArea(const srRect& r);

@@ -10,6 +10,7 @@
 #include "srCheckbox.h"
 #include "srLabel.h"
 #include "srRadioButton.h"
+#include "srSpinner.h"
 
 bool MainRunning = true;
 
@@ -60,9 +61,11 @@ int main(int argc, char** args)
 	rb3->setText("radio b3!");
 	srgui::srRadioGroup* rg = new srgui::srRadioGroup{ rb1, rb2, rb3  };
 
-	srgui::CreateWindow({ 500,500,200,200 }, nullptr, "Banana 3");
+	srgui::srWindow* win3 = srgui::CreateWindow({ 100,500,200,200 }, nullptr, "Banana 3");
+	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });
+	win3->addChild(spin);
 
-	while( MainRunning ) 
+	while( MainRunning )
 	{
 		SDL_Event event;
 		while( SDL_PollEvent(&event) ) 

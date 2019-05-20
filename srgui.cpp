@@ -50,6 +50,31 @@ bool point_in_rect(const srRect& r, const srPoint& p)
 		p.y >= r.y && p.y < (r.y+r.height) );
 }
 
+srControl* find_in_container(srContainer* con, const srPoint& p)
+{
+	srControl* C = nullptr;
+
+	for(int i = 0; i < con->getNumChildren(); ++i)
+	{
+		if( ! con->point_in_child(i, p) ) 
+		{
+			continue;
+		}
+		C = con->getChild(i);
+		srContainer* recurse = dynamic_cast<srContainer*>(C);
+		if( recurse )
+		{
+			srRect r;
+			C->getArea(r);
+			srControl* temp = find_in_container(recurse, {p.x - r.x, p.y - r.y});
+			if( temp ) C = temp;
+		}
+		break;
+	}
+
+	return C;
+}
+
 void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 {
 	if( event == SR_EVENT_MOUSE_DOWN )
@@ -110,9 +135,15 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		int y = data1;
 		int relx = data2;
 		int rely = data3;
+		srgui_data.mouse_pos = {x,y};
 
 		if( srgui_data.caption_move )
 		{
+			if( ! srgui_data.windows[0] )
+			{
+				std::puts("how did this happen!?\nsrgui.cpp: line 140");
+				std::exit(1);
+			}
 			srRect r;
 			srgui_data.windows[0]->getArea(r);
 			r.x += relx;
@@ -141,7 +172,17 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		{
 			if( ! W->point_in_child(i, {x,y} ) ) continue;
 		
-			srgui_data.mouse_over.child = W->getChild(i);
+			srControl* C1 = srgui_data.mouse_over.child = W->getChild(i);
+			srContainer* con = dynamic_cast<srContainer*>(C1);
+			if( con ) 
+			{
+				srRect r, wr;
+				C1->getArea(r);
+				W->getArea(wr);
+				srControl* temp = find_in_container(con, { (x - wr.x) - r.x, (y - wr.y) - r.y });
+				if( temp ) srgui_data.mouse_over.child = temp;
+			}
+
 			if( srgui_data.mouse_over.child->getFlags() & SR_CF_REPAINT_ON_HOVER )
 			{
 				W->setDirty();
@@ -170,8 +211,8 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			if( srgui_data.mouse_l_down.child && srgui_data.mouse_l_down == srgui_data.mouse_over )
 			{
 				srIEvent* c = dynamic_cast<srIEvent*>(srgui_data.mouse_l_down.child);
-				if( c ) c->raiseClickEvent();
-				//else puts("It wasn't clickable!");
+				if( c ) c->raiseClickEvent({x,y});
+				else printf("It wasn't clickable! %i\n", srgui_data.mouse_l_down.child->type());
 			}
 			if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
 				&& (srgui_data.mouse_l_down.child->getFlags() & (SR_CF_REPAINT_ON_LEFT_CLICK|SR_CF_REPAINT_ON_LBUTTON_STATE)) )

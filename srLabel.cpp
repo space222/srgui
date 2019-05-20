@@ -13,11 +13,12 @@ extern srgui::system_data srgui_data;
 void srLabel::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;
-
+	srPoint origin = srPoint{area.x,area.y} + info.parent_offset;
+	
 	srRect r;
 	text_layout->getExtents(r);
 	surf->setColor(srgui_data.UIStyle.textColor);
-	surf->drawTextLayout({(int)(area.x+20), (int)(area.y)}, text_layout);
+	surf->drawTextLayout(origin, text_layout);
 
 	return;
 }

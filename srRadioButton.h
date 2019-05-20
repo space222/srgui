@@ -26,7 +26,7 @@ public:
 	virtual void setText(const std::string& str);
 	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
 
-	virtual void raiseClickEvent() override;
+	virtual void raiseClickEvent(const srEventInfo& ei) override;
 
 	virtual bool checked() { return isChecked; }
 	virtual void setChecked(bool v);

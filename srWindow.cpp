@@ -87,10 +87,16 @@ void srWindow::draw(const srDrawInfo& info)
 		srDrawInfo di;
 		di.surface = surface;
 		di.flags = (int)0;
-		if( srgui_data.mouse_over && srgui_data.mouse_over.child == c ) { di.flags |= SR_DIF_MOUSE_OVER; }
-		if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child == c ) di.flags |= SR_DIF_MOUSE_LEFT;
-		if( srgui_data.mouse_m_down && srgui_data.mouse_m_down.child == c ) di.flags |= SR_DIF_MOUSE_MIDDLE;
-		if( srgui_data.mouse_r_down && srgui_data.mouse_r_down.child == c ) di.flags |= SR_DIF_MOUSE_RIGHT;
+		di.parent_offset = {0,0};
+		di.mouse_rel = srgui_data.mouse_pos - srPoint{area.x, area.y};
+		if( (srgui_data.mouse_over && srgui_data.mouse_over.child == c) 
+				|| point_in_child(i, srgui_data.mouse_pos) ) { di.flags |= SR_DIF_MOUSE_OVER; }
+		if( srgui_data.mouse_l_down && 
+			(srgui_data.mouse_l_down.child == c || point_in_child(i, srgui_data.mouse_pos)) ) di.flags |= SR_DIF_MOUSE_LEFT;
+		if( srgui_data.mouse_m_down && 
+			(srgui_data.mouse_m_down.child == c || point_in_child(i, srgui_data.mouse_pos)) ) di.flags |= SR_DIF_MOUSE_MIDDLE;
+		if( srgui_data.mouse_r_down && 
+			(srgui_data.mouse_r_down.child == c || point_in_child(i, srgui_data.mouse_pos)) ) di.flags |= SR_DIF_MOUSE_RIGHT;
 		c->draw(di);
 	}
 

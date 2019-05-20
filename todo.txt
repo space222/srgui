@@ -4,8 +4,7 @@ SRGUI Todo List
 	1. continue rearranging headers (this started as a single h/cpp pair)
 	2. add some helper functions for duplication that's appearing (eg setParentDirty, setArea)
 	3. maybe even fit size to text extents function
-	4. design srRadioGroup & srRadioBox.
-	(somewhere in here textfields, window resizing, caption buttons, and so much more)
+	4. somewhere in here textfields, window resizing, caption buttons, and so much more
 
 Notes
 -------
