@@ -34,7 +34,7 @@ enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIO
 enum srDrawInfoFlags { SR_DIF_FOCUS = 1, SR_DIF_MOUSE_OVER = 2, 
 		       SR_DIF_MOUSE_LEFT = 4, SR_DIF_MOUSE_MIDDLE = 8,
 		       SR_DIF_MOUSE_RIGHT = 16 };
-enum srEventType { SR_EVENT_MOUSE_MOVE = 1, SR_EVENT_MOUSE_DOWN, SR_EVENT_MOUSE_UP };
+enum srEventType { SR_EVENT_MOUSE_MOVE = 1, SR_EVENT_MOUSE_DOWN, SR_EVENT_MOUSE_UP, SR_EVENT_KEY_PRESS };
 
 class srDrawSurface;
 
@@ -60,7 +60,7 @@ const uint64_t SR_CF_REPAINT_WHILE_FOCUS = (1ULL<<58);
 const uint64_t SR_CF_REPAINT_ON_LEFT_CLICK = (1ULL<<57);
 const uint64_t SR_CF_REPAINT_ON_MID_CLICK = (1ULL<<56);
 const uint64_t SR_CF_REPAINT_ON_RIGHT_CLICK = (1ULL<<55);
-const uint64_t SR_CR_REPAINT_ON_KEY_PRESS = (1ULL<<54);
+const uint64_t SR_CF_REPAINT_ON_KEY_PRESS = (1ULL<<54);
 
 class srWindow;
 class srControl;

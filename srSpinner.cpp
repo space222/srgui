@@ -7,7 +7,7 @@
 #include "srDrawSurface.h"
 #include "srWindow.h"
 #include "srButton.h"
-#include "srLabel.h"
+#include "srTextField.h"
 #include "srSpinner.h"
 
 namespace srgui {
@@ -36,17 +36,20 @@ srSpinner::srSpinner(const srRect& a)
 	area = a;
 	flags = SR_CF_REPAINT_ON_LBUTTON_STATE | SR_CF_REPAINT_ON_HOVER;
 	value = 0;
-	text = new srLabel;
+	text = new srTextField;
+	text->setParent(this);
 	text->setText("0");
 	text->setArea({0, 0, a.width/2, a.height});
 	up = new srButton;
+	up->setParent(this);
 	up->setText("\u2BC5");
 	up->setArea({(int)a.width/2, 0, a.width/2, a.height/2});
 	down = new srButton;
+	down->setParent(this);
 	down->setText("\u2BC6");
 	down->setArea({(int)a.width/2, (int)a.height/2, a.width/2, a.height/2});
-	down->onClick = [&]{ value--; text->setText(std::to_string(value)); std::puts("DOWN"); };
-	up->onClick = [&]{ value++; text->setText(std::to_string(value)); std::puts("UP"); };
+	down->onClick = [&]{ value--; text->setText(std::to_string(value)); };
+	up->onClick   = [&]{ value++; text->setText(std::to_string(value)); };
 	return;
 }
 

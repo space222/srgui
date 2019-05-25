@@ -60,6 +60,9 @@ public:
 
 	virtual srControlType type() override { return SR_CT_WINDOW; }
 
+	virtual void setChildFocus(srControl* c) { focus = c; return; }
+	virtual srControl* getChildFocus() { return focus; }
+
 	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; isdirty = true; return; }
 
 	friend void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
@@ -70,6 +73,7 @@ protected:
 	bool isdirty = true;
 	srPangoTextLayout* caption_layout;
 	std::vector<srControl*> children;
+	srControl* focus;
 	std::string title;
 	srDrawSurface* surface;
 };

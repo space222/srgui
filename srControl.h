@@ -18,13 +18,14 @@ public:
 struct srEventInfo
 {
 	srPoint mouse;
+	uint32_t mods, key;
 };
 
 class srIEvent
 {
 public:
 	virtual void raiseClickEvent(const srEventInfo&) {};
-
+	virtual void raiseKeyPressEvent(const srEventInfo&) {};
 };
 
 
@@ -43,6 +44,7 @@ public:
 	virtual srControl* getParent() { return parent; }
 	virtual void setParent(srControl* c) { parent = c; }
 	
+	friend void generateDrawList(std::vector<srRenderTask>& tasks);
 	friend void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
 protected:
 	srRect area;

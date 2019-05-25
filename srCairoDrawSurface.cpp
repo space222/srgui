@@ -34,6 +34,26 @@ void srPangoTextLayout::getExtents(srRect& r)
 	return;
 }
 
+void srPangoTextLayout::getCursorPos(int index, srRect& r)
+{
+	srRect str; //, wk;
+	pango_layout_get_cursor_pos(layout, index, (PangoRectangle*)&str, nullptr);
+	r = str;
+	r.x /= PANGO_SCALE;
+	r.y /= PANGO_SCALE;
+	r.width /= PANGO_SCALE;
+	r.height /= PANGO_SCALE;
+	return;
+}
+
+bool srPangoTextLayout::getIndexFromPos(const srPoint& p, int &index)
+{
+	int t;
+	bool h = pango_layout_xy_to_index(layout, p.x * PANGO_SCALE, p.y * PANGO_SCALE, &index, &t);
+	index += t;
+	return h;
+}
+
 void srPangoTextLayout::setText(const std::string& text)
 {
 	PangoAttrList* attrlist = nullptr;

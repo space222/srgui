@@ -77,6 +77,27 @@ srControl* find_in_container(srContainer* con, const srPoint& p)
 
 void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 {
+	if( event == SR_EVENT_KEY_PRESS )
+	{
+		int mods = data0;
+		int key = data1;
+
+		if( ! srgui_data.windows[0] )
+		{
+			return;
+		}
+
+		srIEvent* ev = dynamic_cast<srIEvent*>( srgui_data.windows[0]->getChildFocus() );
+
+		if( ! ev )
+		{
+			return;
+		}
+
+		ev->raiseKeyPressEvent({{0,0}, (uint32_t)mods, (uint32_t)key});
+		
+		return;
+	}
 	if( event == SR_EVENT_MOUSE_DOWN )
 	{
 		int button = data0;
@@ -118,6 +139,23 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		case 1: srgui_data.mouse_l_down = srgui_data.mouse_over; break;
 		case 2: srgui_data.mouse_m_down = srgui_data.mouse_over; break;
 		case 3: srgui_data.mouse_r_down = srgui_data.mouse_over; break;
+		}
+
+		if( srgui_data.mouse_over && srgui_data.mouse_over.child )
+		{
+			srControl *c = srgui_data.windows[0]->getChildFocus();
+			if( c && (c->flags & SR_CF_REPAINT_WHILE_FOCUS ) )
+			{
+				srgui_data.windows[0]->setDirty();
+			}
+			srgui_data.windows[0]->setChildFocus(srgui_data.mouse_over.child);
+		} else {
+			srControl *c = srgui_data.windows[0]->getChildFocus();
+			if( c && (c->flags & SR_CF_REPAINT_WHILE_FOCUS ) )
+			{
+				srgui_data.windows[0]->setDirty();
+			}
+			srgui_data.windows[0]->setChildFocus(nullptr);
 		}
 
 		if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
@@ -211,7 +249,14 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			if( srgui_data.mouse_l_down.child && srgui_data.mouse_l_down == srgui_data.mouse_over )
 			{
 				srIEvent* c = dynamic_cast<srIEvent*>(srgui_data.mouse_l_down.child);
-				if( c ) c->raiseClickEvent({x,y});
+				if( c )
+				{
+					srWindow* win = srgui_data.mouse_l_down.window;
+					srRect cr, r;
+					win->getArea(r);
+					srgui_data.mouse_l_down.child->getArea(cr);
+					c->raiseClickEvent({{(x-r.x)-cr.x,(y-r.y)-cr.y}, 0,0});
+				}
 				else printf("It wasn't clickable! %i\n", srgui_data.mouse_l_down.child->type());
 			}
 			if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
@@ -243,7 +288,9 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 
 		/* TODO: open menus, comboboxes, etc */
 
-		if( win->getDirty() )
+		srControl* fc = win->getChildFocus();
+		
+		if( win->getDirty() || (fc && (fc->flags & SR_CF_REPAINT_WHILE_FOCUS)) )
 		{
 			win->draw(srDrawInfo{win->surface, (srDrawInfoFlags) 0, 
 				{srgui_data.mouse_pos.x-win->area.x, srgui_data.mouse_pos.y-win->area.y}});

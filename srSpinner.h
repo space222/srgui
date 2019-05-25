@@ -4,7 +4,7 @@
 #include <pango/pangocairo.h>
 #include "srControl.h"
 #include "srDrawSurface.h"
-#include "srLabel.h"
+#include "srTextField.h"
 #include "srButton.h"
 
 namespace srgui {
@@ -35,9 +35,11 @@ public:
 
 	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
 
+	virtual int getValue() { return value; }
+
 protected:
 	int value;
-	srLabel* text;
+	srTextField* text;
 	srButton *up, *down;
 };
 

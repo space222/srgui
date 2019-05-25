@@ -27,6 +27,7 @@ srWindow::srWindow(int w, int h, srDrawSurface* draw)
 	area.width = w;
 	area.height = h;
 	parent = nullptr;
+	focus = nullptr;
 	surface = draw;
 	caption_layout = nullptr;
 }
@@ -97,6 +98,8 @@ void srWindow::draw(const srDrawInfo& info)
 			(srgui_data.mouse_m_down.child == c || point_in_child(i, srgui_data.mouse_pos)) ) di.flags |= SR_DIF_MOUSE_MIDDLE;
 		if( srgui_data.mouse_r_down && 
 			(srgui_data.mouse_r_down.child == c || point_in_child(i, srgui_data.mouse_pos)) ) di.flags |= SR_DIF_MOUSE_RIGHT;
+		if( c == focus ) di.flags |= SR_DIF_FOCUS;
+
 		c->draw(di);
 	}
 
