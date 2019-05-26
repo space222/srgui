@@ -1,22 +1,21 @@
 SRGUI Todo List
 -----------------
 
-	1. continue rearranging headers (this started as a single h/cpp pair)
-	2. look at providing extra constructors
-	3. somewhere in here window resizing, caption buttons, and so much more
-	4. textfield
-	5. maybe menus
+	1. clipping (need rectangle clip and clip reset)
+	2. textfield arrow keys, shift, auto-scrolling from cursor movement.
+	3. provide extra constructors (size from text, default sizes, etc)
+	4. progress bar?
 
 Notes
 -------
 
-	* still need to have a look at layout managing.
+	*  layout managers.
 	   - some kind necessary for controls that can change shape in a way
 	     that moves other controls around (like Dear ImGui's Collapsing Header)
 	   - also affected by resize (especially controls that should stay relative
 			 to border, like caption decorator buttons)
 
-	* should look into menu bar object layout
+	* menu bar object layout
 		^ how to implement menus is going to be tricky. 
 		- a srMenuBar contains basically a list of srMenu.
 		- srMenu has a surface like a srWindow and can redraw on changing item attributes
