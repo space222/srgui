@@ -83,18 +83,24 @@ void srRadioButton::setText(const std::string& s)
 void srRadioButton::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;
+	srPoint origin = srPoint{area.x, area.y} + info.parent_offset;
+	srRect newarea{ origin.x, origin.y, area.width, area.height };
 
 	uint32_t outlineColor = (srgui_data.UIStyle.buttonStyle & SR_SF_OUTLINE) ? 
 					srgui_data.UIStyle.buttonOutline : srgui_data.UIStyle.buttonBackground;
 
+	//surf->outlineRectangle(newarea);
+
+	int h = area.height/2;
+
 	surf->setColor(srgui_data.UIStyle.textBackground);
-	surf->drawCircle({area.x+5, area.y+5}, 10);
+	surf->drawCircle({newarea.x+h, newarea.y+h}, h - 3);
 	surf->setColor(0);
-	surf->outlineCircle({area.x+5, area.y+5}, 10);
-		
+	surf->outlineCircle({newarea.x+h, newarea.y+h}, h - 3, 1);
+
 	if( isChecked )
 	{
-		surf->drawCircle({area.x+5, area.y+5}, 6);
+		surf->drawCircle({newarea.x+h, newarea.y+h}, h/2 - 2);
 	}
 
 	surf->setColor(srgui_data.UIStyle.buttonBackground);
@@ -102,7 +108,7 @@ void srRadioButton::draw(const srDrawInfo& info)
 	srRect r;
 	text_layout->getExtents(r);
 	surf->setColor(0);
-	surf->drawTextLayout({(int)(area.x+20), (int)(area.y)}, text_layout);
+	surf->drawTextLayout({(int)(newarea.x+20), (int)(newarea.y)}, text_layout);
 
 	return;
 }

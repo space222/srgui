@@ -1,4 +1,5 @@
 #include <string>
+#include <chrono>
 #include <cairo.h>
 #include <pango/pangocairo.h>
 #include "srControl.h"
@@ -27,7 +28,14 @@ void srTextField::draw(const srDrawInfo& info)
 	surf->setColor(srgui_data.UIStyle.textColor);
 	surf->drawTextLayout(origin + srPoint{4,4}, text_layout);
 
-	if( info.flags & SR_DIF_FOCUS )
+	std::chrono::system_clock::time_point t = std::chrono::system_clock::now();
+	if( (t - cursor_last_change) > std::chrono::milliseconds(blink_rate) )
+	{
+		cursor_last_change = t;
+		blink_on = !blink_on;
+	}	
+
+	if( display_cursor && blink_on && (info.flags & SR_DIF_FOCUS) )
 	{
 		text_layout->getCursorPos(cursor_pos, r);
 		//std::printf("x=%i, y=%i, w=%i, h=%i\n", r.x, r.y, r.width, r.height);

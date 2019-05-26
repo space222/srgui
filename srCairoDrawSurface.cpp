@@ -54,6 +54,19 @@ bool srPangoTextLayout::getIndexFromPos(const srPoint& p, int &index)
 	return h;
 }
 
+void srPangoTextLayout::getPosFromIndex(int index, srPoint& p)
+{
+	srRect r;
+	pango_layout_index_to_pos(layout, index, (PangoRectangle*)&r);
+
+	r.x /= PANGO_SCALE;
+	r.y /= PANGO_SCALE;
+	r.width /= PANGO_SCALE;
+	r.height /= PANGO_SCALE;
+
+	return;
+}
+
 void srPangoTextLayout::setText(const std::string& text)
 {
 	PangoAttrList* attrlist = nullptr;

@@ -9,7 +9,8 @@ class srTextLayout
 public:
 	virtual void setFont(const std::string&) =0;
 
-	virtual bool getIndexFromPos(const srPoint&, int &index) =0; 
+	virtual void getPosFromIndex(int index, srPoint& p) =0;
+	virtual bool getIndexFromPos(const srPoint& p, int &index) =0; 
 	virtual void getCursorPos(int index, srRect& r) =0;
 
 	// getExtents must only set width and height.
@@ -72,6 +73,8 @@ public:
 	virtual void getExtents(srRect&) override;
 	virtual void setText(const std::string&) override;
 	virtual bool getIndexFromPos(const srPoint& p, int &index) override;
+	virtual void getPosFromIndex(int index, srPoint& p) override;
+
 	virtual void getCursorPos(int index, srRect& r) override;
 	PangoLayout* getPangoLayout() { return layout; }
 protected:
