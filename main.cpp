@@ -13,6 +13,7 @@
 #include "srRadioButton.h"
 #include "srSpinner.h"
 #include "srTextField.h"
+#include "srProgressBar.h"
 
 bool MainRunning = true;
 
@@ -66,10 +67,14 @@ int main(int argc, char** args)
 	srgui::srWindow* win3 = srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3");
 	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });
 	srgui::srTextField* fld = new srgui::srTextField();
+	srgui::srProgressBar* pb = new srgui::srProgressBar();
+	pb->setProgress(66);
+	pb->setArea({ 20, 160, 200, 30 });
 	fld->setArea({ 20, 120, 230, 30 });
 	fld->setText("and ");
 	win3->addChild(fld);
 	win3->addChild(spin);
+	win3->addChild(pb);
 
 	while( MainRunning )
 	{
