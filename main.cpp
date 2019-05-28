@@ -43,7 +43,7 @@ int main(int argc, char** args)
 	chk->setArea({ 50, 110, 100, 20 });
 	chk->setText("This is <span color='blue'>checkbox</span>");
 	but1->setArea({ 50, 50, 100, 50 });
-	but1->setText("clicky");
+	but1->setText("button 1");
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
 	srgui::srWindow* win2 = srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2");
 

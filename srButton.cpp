@@ -65,7 +65,7 @@ void srButton::draw(const srDrawInfo& info)
 	srRect r;
 	text_layout->getExtents(r);
 	surf->setColor(0);
-	surf->drawTextLayout({(int)(newarea.x+r.width/2), (int)(newarea.y)}, text_layout);
+	surf->drawTextLayout({(int)(newarea.x+newarea.width/2-r.width/2), (int)(newarea.y+newarea.height/2-r.height/2)}, text_layout);
 
 	return;
 }
