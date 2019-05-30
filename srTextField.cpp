@@ -58,6 +58,7 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 		text.erase(cursor_pos, 1);
 	}
 
+	blink_on = true;
 	text_layout->setText(text);
 	return;
 }
@@ -70,6 +71,8 @@ void srTextField::raiseClickEvent(const srEventInfo& info)
 	//std::printf("clicked at {%i, %i}\n", p.x, p.y);
 	text_layout->getIndexFromPos(p, ndex);
 	cursor_pos = ndex;
+
+	blink_on = true;
 	return;
 }
 
