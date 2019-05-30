@@ -102,6 +102,19 @@ void srPangoTextLayout::setFont(const std::string& fdsc)
 	return;
 }
 
+void srCairoDrawSurface::clip(const srRect& r)
+{
+	cairo_rectangle(ct, r.x, r.y, r.width, r.height);
+	cairo_clip(ct);
+	return;
+}
+
+void srCairoDrawSurface::reset_clip()
+{
+	cairo_reset_clip(ct);
+	return;
+}
+
 void srCairoDrawSurface::drawRectangle(const srRect& r) 
 {
 	cairo_rectangle(ct, r.x, r.y, r.width, r.height);

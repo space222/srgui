@@ -100,7 +100,11 @@ void srWindow::draw(const srDrawInfo& info)
 			(srgui_data.mouse_r_down.child == c || point_in_child(i, srgui_data.mouse_pos)) ) di.flags |= SR_DIF_MOUSE_RIGHT;
 		if( c == focus ) di.flags |= SR_DIF_FOCUS;
 
+		srRect r;
+		c->getArea(r);
+		surface->clip(r);
 		c->draw(di);
+		surface->reset_clip();
 	}
 
 	isdirty = false;

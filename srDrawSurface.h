@@ -52,6 +52,9 @@ public:
 
 	virtual void drawLine(float x1, float y1, float x2, float y2, float linewidth = 2.0f) =0;
 
+	virtual void clip(const srRect&) =0;
+	virtual void reset_clip() =0;
+
 	virtual void drawTextLayout(const srPoint& p, srTextLayout*) =0;
 
 	/* this is where the client will stuff a pointer to a struct that is the
@@ -106,6 +109,9 @@ public:
 	virtual void setColor(uint32_t rgba);
 
 	virtual void drawTextLayout(const srPoint& p, srTextLayout*) override;
+
+	virtual void clip(const srRect&) override;
+	virtual void reset_clip() override;
 
 	virtual void drawLine(float x1, float y1, float x2, float y2, float width = 2.0f) override;
 

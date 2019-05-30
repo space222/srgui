@@ -1,10 +1,9 @@
 SRGUI Todo List
 -----------------
 
-	1. clipping (need rectangle clip and clip reset)
-	2. textfield arrow keys, shift, auto-scrolling from cursor movement.
-	3. provide extra constructors (size from text, default sizes, etc)
-	4. progress bar?
+	1. textfield arrow keys, shift, auto-scrolling from cursor movement.
+	2. provide extra constructors (size from text, default sizes, etc)
+	3. start menus?
 
 Notes
 -------
