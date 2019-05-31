@@ -50,6 +50,30 @@ bool point_in_rect(const srRect& r, const srPoint& p)
 		p.y >= r.y && p.y < (r.y+r.height) );
 }
 
+srPoint get_control_relative_point(srWindow* win, srControl* c, const srPoint& p)
+{
+	srRect win_area, c_area;
+	win->getArea(win_area);
+	c->getArea(c_area);
+	
+	srPoint res{ (p.x - win_area.x), (p.y - win_area.y) };
+	
+	srControl* par = c->getParent();
+	while( par && par != win )
+	{
+		srRect parea;
+		par->getArea(parea);
+		res.x -= parea.x;
+		res.y -= parea.y;
+		par = par->getParent();
+	}
+
+	res.x -= c_area.x;
+	res.y -= c_area.y;
+
+	return res;
+}
+
 srControl* find_in_container(srContainer* con, const srPoint& p)
 {
 	srControl* C = nullptr;
@@ -111,6 +135,15 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		// find it and bring it up
 		if( srgui_data.mouse_over && srgui_data.mouse_over.window != srgui_data.windows[0] )
 		{
+			// remove focus from the control on the old window[0] that had it
+			srControl* fc = srgui_data.windows[0]->getChildFocus();
+			if( fc && (fc->flags & SR_CF_REPAINT_WHILE_FOCUS) )
+			{
+				srgui_data.windows[0]->setDirty();
+			}
+			srgui_data.windows[0]->setChildFocus(nullptr);
+			
+			// find and pull up the new window
 			for(int i = 0; i < srgui_data.windows.size(); ++i)
 			{
 				if( srgui_data.mouse_over.window == srgui_data.windows[i] )
@@ -141,20 +174,16 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		case 3: srgui_data.mouse_r_down = srgui_data.mouse_over; break;
 		}
 
+		srControl* fc = srgui_data.windows[0]->getChildFocus();
+		if( fc && (fc->flags & SR_CF_REPAINT_WHILE_FOCUS) )
+		{
+			srgui_data.windows[0]->setDirty();
+		}
+
 		if( srgui_data.mouse_over && srgui_data.mouse_over.child )
 		{
-			srControl *c = srgui_data.windows[0]->getChildFocus();
-			if( c && (c->flags & SR_CF_REPAINT_WHILE_FOCUS ) )
-			{
-				srgui_data.windows[0]->setDirty();
-			}
 			srgui_data.windows[0]->setChildFocus(srgui_data.mouse_over.child);
 		} else {
-			srControl *c = srgui_data.windows[0]->getChildFocus();
-			if( c && (c->flags & SR_CF_REPAINT_WHILE_FOCUS ) )
-			{
-				srgui_data.windows[0]->setDirty();
-			}
 			srgui_data.windows[0]->setChildFocus(nullptr);
 		}
 
@@ -252,10 +281,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 				if( c )
 				{
 					srWindow* win = srgui_data.mouse_l_down.window;
-					srRect cr, r;
-					win->getArea(r);
-					srgui_data.mouse_l_down.child->getArea(cr);
-					c->raiseClickEvent({{(x-r.x)-cr.x,(y-r.y)-cr.y}, 0,0});
+					c->raiseClickEvent({get_control_relative_point(win, srgui_data.mouse_l_down.child, {x,y}), 0,0});
 				}
 				else printf("It wasn't clickable! %i\n", srgui_data.mouse_l_down.child->type());
 			}
@@ -293,7 +319,7 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 		if( win->getDirty() || (fc && (fc->flags & SR_CF_REPAINT_WHILE_FOCUS)) )
 		{
 			win->draw(srDrawInfo{win->surface, (srDrawInfoFlags) 0, 
-				{srgui_data.mouse_pos.x-win->area.x, srgui_data.mouse_pos.y-win->area.y}});
+				{srgui_data.mouse_pos.x-win->area.x, srgui_data.mouse_pos.y-win->area.y}, {0,0}});
 		}
 
 		tasks.emplace_back(win->surface, win->area, win->getDirty());

@@ -33,7 +33,7 @@ void srTextField::draw(const srDrawInfo& info)
 	{
 		cursor_last_change = t;
 		blink_on = !blink_on;
-	}	
+	}
 
 	if( display_cursor && blink_on && (info.flags & SR_DIF_FOCUS) )
 	{
@@ -51,7 +51,7 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 		text.insert(cursor_pos, 1, (char)info.key);
 		cursor_pos++;
 
-	} else if( (info.mods & (1<<17)) && text.size() ) {
+	} else if( (info.mods & (1<<17)) && text.size() && cursor_pos > 0 ) {
 		text.erase(cursor_pos-1, 1);
 		cursor_pos--;
 	} else if( (info.mods & (1<<16)) && text.size() ) {

@@ -304,6 +304,8 @@ void srCairoDrawSurface::drawLine(float x1, float y1, float x2, float y2, float 
 
 void srCairoDrawSurface::setSize(int Width, int Height)
 {
+	if( Width == this->width && Height == this->height ) return;
+
 	this->width = Width;
 	this->height = Height;
 	this->stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, Width);

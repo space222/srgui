@@ -4,6 +4,7 @@ SRGUI Todo List
 	1. textfield arrow keys, shift, auto-scrolling from cursor movement.
 	2. provide extra constructors (size from text, default sizes, etc)
 	3. start menus?
+	4. fix drawing-while-focus issues in composite controls
 
 Notes
 -------

@@ -18,7 +18,9 @@ bool srSpinner::point_in_child(uint32_t index, const srPoint& p)
 {
 	if( index == 0 )
 	{
-		return false;
+		srRect text_area;
+		text->getArea(text_area);
+		return point_in_rect(text_area, p);
 	}
 	if( index == 1 )
 	{
@@ -71,6 +73,7 @@ void srSpinner::draw(const srDrawInfo& info)
 	} else {
 		newinfo.flags &= ~(SR_DIF_MOUSE_LEFT|SR_DIF_MOUSE_OVER);
 	}
+	
 	up->draw(newinfo);
 
 	if( point_in_child(2, newinfo.mouse_rel) )

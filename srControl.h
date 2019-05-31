@@ -42,6 +42,7 @@ public:
 	virtual srControlType type() =0;
 
 	virtual srControl* getParent() { return parent; }
+	virtual srControl* getToplevelParent();
 	virtual void setParent(srControl* c) { parent = c; }
 	
 	friend void generateDrawList(std::vector<srRenderTask>& tasks);
