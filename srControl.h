@@ -33,6 +33,8 @@ class srControl
 {
 public:
 	srControl() : parent(nullptr) { }
+	virtual ~srControl() { }
+
 	virtual uint64_t getFlags() { return flags; }
 	virtual void setFlags(uint64_t f) { flags = f; return; }
 	virtual void setArea(const srRect& r);

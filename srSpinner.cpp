@@ -57,6 +57,9 @@ srSpinner::srSpinner(const srRect& a)
 
 void srSpinner::draw(const srDrawInfo& info)
 {
+// if a composite control only consists of other controls and no custom extra bits
+// it no longer needs to draw its' children as this has been moved into srWindow.
+/*
 	srDrawSurface* surf = info.surface;
 
 	srDrawInfo newinfo = info;
@@ -83,7 +86,7 @@ void srSpinner::draw(const srDrawInfo& info)
 		newinfo.flags &= ~(SR_DIF_MOUSE_LEFT|SR_DIF_MOUSE_OVER);
 	}	
 	down->draw(newinfo);
-
+*/
 	return;
 }
 

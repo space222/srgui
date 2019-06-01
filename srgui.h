@@ -61,6 +61,10 @@ const uint64_t SR_CF_REPAINT_ON_LEFT_CLICK = (1ULL<<57);
 const uint64_t SR_CF_REPAINT_ON_MID_CLICK = (1ULL<<56);
 const uint64_t SR_CF_REPAINT_ON_RIGHT_CLICK = (1ULL<<55);
 const uint64_t SR_CF_REPAINT_ON_KEY_PRESS = (1ULL<<54);
+const uint64_t SR_CF_LAYOUT_FIXED_WIDTH = (1ULL<<49);
+const uint64_t SR_CF_LAYOUT_FIXED_HEIGHT = (1ULL<<48);
+const uint64_t SR_CF_LAYOUT_FIXED_Y_OFFSET = (1ULL<<47);
+const uint64_t SR_CF_LAYOUT_FIXED_X_OFFSET = (1ULL<<46);
 
 class srWindow;
 class srControl;

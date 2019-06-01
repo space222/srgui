@@ -70,6 +70,7 @@ public:
 	friend void generateDrawList(std::vector<srRenderTask>&);
 protected:
 	srWindow(int w, int h, srDrawSurface*);
+	void draw_container(srWindow* win, srControl* contr, const srDrawInfo& info);
 	bool isdirty = true;
 	srPangoTextLayout* caption_layout;
 	std::vector<srControl*> children;

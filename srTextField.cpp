@@ -110,6 +110,7 @@ void srTextField::setText(const std::string& s)
 		text_layout = new srPangoTextLayout;
 		//text_layout->setFont("Sans 15");
 	}
+	cursor_pos = scroll_offset = 0;
 	text_layout->setText(text);
 	return;
 }

@@ -28,8 +28,8 @@ void srCheckbox::draw(const srDrawInfo& info)
 	srPoint origin = srPoint{area.x, area.y} + info.parent_offset;
 	srRect newarea{ origin.x, origin.y, area.width, area.height };
 
-	uint32_t outlineColor = (srgui_data.UIStyle.buttonStyle & SR_SF_OUTLINE) ? 
-					srgui_data.UIStyle.buttonOutline : srgui_data.UIStyle.buttonBackground;
+	//uint32_t outlineColor = (srgui_data.UIStyle.buttonStyle & SR_SF_OUTLINE) ? 
+	//				srgui_data.UIStyle.buttonOutline : srgui_data.UIStyle.buttonBackground;
 
 	surf->setColor(srgui_data.UIStyle.textBackground);
 	surf->drawRectangle({newarea.x, newarea.y, 15, 15});

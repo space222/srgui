@@ -2,6 +2,7 @@
 #include <cairo.h>
 #include <cstring>
 #include <cctype>
+#include <cstdint>
 #include <utility>
 #include <SDL.h>
 #include "srgui.h"
@@ -62,7 +63,7 @@ int main(int argc, char** args)
 	rb2->setText("radio b2!");
 	rb3->setArea({ 50, 227, 100, 20});
 	rb3->setText("radio b3!");
-	srgui::srRadioGroup* rg = new srgui::srRadioGroup{ rb1, rb2, rb3  };
+	/* srgui::srRadioGroup* rg = */new srgui::srRadioGroup{ rb1, rb2, rb3  };
 
 	srgui::srWindow* win3 = srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3");
 	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });
@@ -128,7 +129,7 @@ int main(int argc, char** args)
 		std::vector<srgui::srRenderTask> tasks;
 		srgui::generateDrawList(tasks);
 
-		for(int i = 0; i < tasks.size(); ++i)
+		for(uint32_t i = 0; i < tasks.size(); ++i)
 		{
 			UserSurface *surf = (UserSurface*) tasks[i].surface->getUserData();		
 			if( !surf )

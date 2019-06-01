@@ -78,7 +78,7 @@ srControl* find_in_container(srContainer* con, const srPoint& p)
 {
 	srControl* C = nullptr;
 
-	for(int i = 0; i < con->getNumChildren(); ++i)
+	for(uint32_t i = 0; i < con->getNumChildren(); ++i)
 	{
 		if( ! con->point_in_child(i, p) ) 
 		{
@@ -144,7 +144,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srgui_data.windows[0]->setChildFocus(nullptr);
 			
 			// find and pull up the new window
-			for(int i = 0; i < srgui_data.windows.size(); ++i)
+			for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
 			{
 				if( srgui_data.mouse_over.window == srgui_data.windows[i] )
 				{
@@ -164,7 +164,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srgui_data.windows[0]->getArea(r);
 			c = r;
 			c.height = srgui_data.UIStyle.windowCaptionHeight;
-			if( srgui_data.caption_move = point_in_rect( c, {x,y} ) ) return;
+			if( (srgui_data.caption_move = point_in_rect( c, {x,y} )) ) return;
 		}
 
 		switch( button )
@@ -220,7 +220,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		}
 
 		srWindow* W = nullptr;
-		for(int i = 0; i < srgui_data.windows.size(); ++i)
+		for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
 		{
 			srWindow* temp = srgui_data.windows[i];
 			srRect r;
@@ -235,7 +235,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		srgui_data.mouse_over.child = nullptr;
 
 		if( W )
-		for(int i = 0; i < W->getNumChildren(); ++i)
+		for(uint32_t i = 0; i < W->getNumChildren(); ++i)
 		{
 			if( ! W->point_in_child(i, {x,y} ) ) continue;
 		
