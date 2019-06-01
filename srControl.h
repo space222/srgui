@@ -34,7 +34,7 @@ class srControl
 public:
 	srControl() : parent(nullptr) { }
 	virtual uint64_t getFlags() { return flags; }
-	virtual void setFlags(uint32_t) =0;
+	virtual void setFlags(uint64_t f) { flags = f; return; }
 	virtual void setArea(const srRect& r);
 	virtual void getArea(srRect& r) { r = area; return; }
 

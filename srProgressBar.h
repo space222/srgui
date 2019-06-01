@@ -18,8 +18,6 @@ public:
 
 	virtual void setProgress(int percent);
 
-	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
-
 protected:
 	int progress;
 	std::string text;

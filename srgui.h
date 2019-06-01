@@ -47,7 +47,7 @@ struct srDrawInfo
 };
 
 /* srControlFlags: for the moment, the top 32bits is reserved for the system and currently used only
- * 	for a control to register whether repainting is needed after certain input events.
+ * 	for a control to event repainting and some layout information.
  *      The lowest 32bits is available to the widget implementation as general storage.
  */
 

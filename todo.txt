@@ -2,7 +2,7 @@ SRGUI Todo List
 -----------------
 
 	1. move composite control rendering into srWindow (cleaner and also fixes 5)
-	2. textfield arrow keys, shift, auto-scrolling from cursor movement.
+	2. textfield arrow keys, shift.
 	3. provide extra constructors (size from text, default sizes, etc)
 	4. start menus?
 	5. fix drawing-while-focus issues in composite controls

@@ -24,7 +24,6 @@ public:
 	virtual srRadioGroup* getGroup() { return r_group; }
 
 	virtual void setText(const std::string& str);
-	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
 
 	virtual void raiseClickEvent(const srEventInfo& ei) override;
 

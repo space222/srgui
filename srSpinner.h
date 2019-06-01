@@ -33,8 +33,6 @@ public:
 
 	virtual bool point_in_child(uint32_t index, const srPoint& p) override;
 
-	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
-
 	virtual int getValue() { return value; }
 
 protected:

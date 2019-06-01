@@ -63,7 +63,7 @@ public:
 	virtual void setChildFocus(srControl* c) { focus = c; return; }
 	virtual srControl* getChildFocus() { return focus; }
 
-	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; isdirty = true; return; }
+	virtual void setFlags(uint64_t f) override { flags = f; isdirty = true; return; }
 
 	friend void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
 	friend srWindow* CreateWindow(const srRect&, void*, const std::string&);

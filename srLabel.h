@@ -16,8 +16,6 @@ public:
 
 	virtual void setText(const std::string& str);
 
-	virtual void setFlags(uint32_t f) override { flags = (flags&~0xFFFFFFFFULL) | f; return; }
-
 protected:
 	std::string text;
 	srPangoTextLayout* text_layout;
