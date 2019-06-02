@@ -39,6 +39,7 @@ void srWindow::setTitle(const std::string& t)
 	{
 		caption_layout = new srPangoTextLayout;
 		caption_layout->setText(title);
+		caption_layout->setFont("Sans 13");
 	}
 
 	return;
@@ -70,8 +71,7 @@ void srWindow::draw(const srDrawInfo& info)
 		
 		if( ! caption_layout )
 		{
-			caption_layout = new srPangoTextLayout;
-			caption_layout->setText(title);
+			setTitle(title);
 		}
 		surface->setColor(srgui_data.UIStyle.windowCaptionTextColor);
 		int a = srgui_data.UIStyle.windowCaptionRounding;
