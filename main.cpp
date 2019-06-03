@@ -15,6 +15,7 @@
 #include "srSpinner.h"
 #include "srTextField.h"
 #include "srProgressBar.h"
+#include "srGroupBox.h"
 
 bool MainRunning = true;
 
@@ -51,17 +52,22 @@ int main(int argc, char** args)
 	srgui::srRadioButton* rb1 = new srgui::srRadioButton();
 	srgui::srRadioButton* rb2 = new srgui::srRadioButton();
 	srgui::srRadioButton* rb3 = new srgui::srRadioButton();
+	srgui::srGroupBox* grpb = new srgui::srGroupBox();
+	grpb->setArea({ 40, 130, 110, 100 });
+	grpb->setText("Group box");
 	srgui::srLabel* lbl = new srgui::srLabel();
 	win2->addChild(lbl);
-	win2->addChild(rb1);
-	win2->addChild(rb2); win2->addChild(rb3);
-	lbl->setArea({ 50, 132, 100, 20});
+	win2->addChild(grpb);
+	grpb->addChild(rb1);
+	grpb->addChild(rb2); grpb->addChild(rb3);
+	
+	lbl->setArea({ 50, 42, 100, 20});
 	lbl->setText("Labels! <b>Yay!</b>");
-	rb1->setArea({ 50, 175, 100, 20});
+	rb1->setArea({ 5, 20, 100, 20});
 	rb1->setText("radio b1!");
-	rb2->setArea({ 50, 200, 100, 20});
+	rb2->setArea({ 5, 40, 100, 20});
 	rb2->setText("radio b2!");
-	rb3->setArea({ 50, 227, 100, 20});
+	rb3->setArea({ 5, 60, 100, 20});
 	rb3->setText("radio b3!");
 	/* srgui::srRadioGroup* rg = */new srgui::srRadioGroup{ rb1, rb2, rb3  };
 

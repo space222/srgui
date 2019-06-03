@@ -60,7 +60,7 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 		text_layout->getExtents(text_rect);
 		text_layout->getCursorPos(cursor_pos, cursor_extents);
 
-		if( scroll_offset + cursor_extents.x >= area.width )
+		if( scroll_offset + cursor_extents.x >= area.width - 4 )
 		{
 			scroll_offset = -(cursor_extents.x - area.width + 6);
 		}
