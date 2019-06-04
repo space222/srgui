@@ -33,6 +33,16 @@ bool srSpinner::point_in_child(uint32_t index, const srPoint& p)
 	return point_in_rect(down_area, p);
 }
 
+bool parse_int(const std::string str, int &val)
+{
+	try {
+		size_t pos = 0;
+		val = std::stoi(str, &pos);
+		return pos == str.size();
+	} catch(std::invalid_argument) { /* just don't want to terminate */ }
+	return false;
+}
+
 srSpinner::srSpinner(const srRect& a)
 {
 	area = a;
@@ -50,8 +60,8 @@ srSpinner::srSpinner(const srRect& a)
 	down->setParent(this);
 	down->setText("\u2BC6");
 	down->setArea({(int)a.width/2, (int)a.height/2, a.width/2, a.height/2});
-	down->onClick = [&]{ value--; text->setText(std::to_string(value)); };
-	up->onClick   = [&]{ value++; text->setText(std::to_string(value)); };
+	down->onClick = [&]{ int a = 0; if( parse_int(text->getText(), a) ) value = a; value--; text->setText(std::to_string(value)); };
+	up->onClick   = [&]{ int a = 0; if( parse_int(text->getText(), a) ) value = a; value++; text->setText(std::to_string(value)); };
 	return;
 }
 
