@@ -102,7 +102,7 @@ void srWindow::draw(const srDrawInfo& info)
 
 		srRect r;
 		c->getArea(r);
-		surface->clip(r);
+		surface->clip({r.x -2, r.y -2, r.width +3, r.height +3});
 		c->draw(di);
 
 		srContainer* contr = dynamic_cast<srContainer*>(c);
@@ -157,7 +157,7 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 		srRect r;
 
 		c->getArea(r);
-		//surface->clip(r);
+		surface->clip({di.parent_offset.x + r.x - 2, di.parent_offset.y + r.y - 2, r.width + 3, r.height + 3});
 		c->draw(di);
 
 		srContainer* contr2 = dynamic_cast<srContainer*>(c);
@@ -166,7 +166,7 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 			draw_container(win, c, di);
 		}
 		
-		//surface->reset_clip();
+		surface->reset_clip();
 	}
 
 	return;

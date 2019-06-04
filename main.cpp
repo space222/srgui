@@ -42,7 +42,7 @@ int main(int argc, char** args)
 	mcl->setArea({ 270, 10, 20, 20 });
 	mcl->setText("X");
 	mcl->onClick = []{ exit(0); };
-	chk->setArea({ 50, 110, 100, 20 });
+	chk->setArea({ 50, 110, 160, 20 });
 	chk->setText("This is <span color='blue'>checkbox</span>");
 	but1->setArea({ 50, 50, 100, 50 });
 	but1->setText("button 1");
@@ -53,14 +53,17 @@ int main(int argc, char** args)
 	srgui::srRadioButton* rb2 = new srgui::srRadioButton();
 	srgui::srRadioButton* rb3 = new srgui::srRadioButton();
 	srgui::srGroupBox* grpb = new srgui::srGroupBox();
-	grpb->setArea({ 40, 130, 110, 100 });
+	grpb->setArea({ 40, 70, 150, 150 });
 	grpb->setText("Group box");
 	srgui::srLabel* lbl = new srgui::srLabel();
 	win2->addChild(lbl);
 	win2->addChild(grpb);
 	grpb->addChild(rb1);
-	grpb->addChild(rb2); grpb->addChild(rb3);
-	
+	grpb->addChild(rb2); 
+	grpb->addChild(rb3);
+	srgui::srSpinner* spin2 = new srgui::srSpinner({ 5, 80, 50, 50 });
+	grpb->addChild(spin2);
+
 	lbl->setArea({ 50, 42, 100, 20});
 	lbl->setText("Labels! <b>Yay!</b>");
 	rb1->setArea({ 5, 20, 100, 20});

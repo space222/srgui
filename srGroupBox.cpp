@@ -18,7 +18,16 @@ void srGroupBox::draw(const srDrawInfo& info)
 	srRect r;
 	text_layout->getExtents(r);
 	surf->setColor(0);
-	surf->outlineRectangle({origin.x, (int)(origin.y+(r.height/2)), area.width, area.height-(r.height/2)}, 1);
+	surf->drawLine(origin.x, origin.y+(r.height/2), origin.x+area.width, origin.y+(r.height/2), 1);
+	surf->drawLine(origin.x, origin.y+area.height-(r.height/2), origin.x+area.width, origin.y+area.height-(r.height/2), 1);
+	surf->drawLine(origin.x, origin.y+(r.height/2), origin.x, origin.y+area.height-(r.height/2), 1);
+	surf->drawLine(origin.x+area.width-1.5f, origin.y+(r.height/2), origin.x+area.width-1.5f, origin.y+area.height-(r.height/2), 1);
+	surf->setColor(0xFFFFFF);
+	surf->drawLine(origin.x, origin.y+(r.height/2)+1, origin.x+area.width, origin.y+(r.height/2)+1, 1);
+	surf->drawLine(origin.x, origin.y+area.height-(r.height/2)+1, origin.x+area.width, origin.y+area.height-(r.height/2)+1, 1);
+	surf->drawLine(origin.x+1.5f, origin.y+(r.height/2), origin.x+1.5f, origin.y+area.height-(r.height/2), 1);
+	surf->drawLine(origin.x+area.width, origin.y+(r.height/2), origin.x+area.width, origin.y+area.height-(r.height/2), 1);
+	
 	surf->setColor(srgui_data.UIStyle.windowBackground);
 	surf->drawRectangle({origin.x+10, origin.y, r.width, r.height});
 	surf->setColor(srgui_data.UIStyle.textColor);

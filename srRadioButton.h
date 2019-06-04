@@ -13,7 +13,7 @@ class srRadioGroup;
 class srRadioButton : public srControl, public srIEvent
 {
 public:
-	srRadioButton() : text_layout(nullptr), isChecked(false) { flags = SR_CF_REPAINT_ON_LEFT_CLICK; }
+	srRadioButton() : text_layout(nullptr), isChecked(false), r_group(nullptr) { flags = SR_CF_REPAINT_ON_LEFT_CLICK; }
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_RADIOBUTTON; }
 

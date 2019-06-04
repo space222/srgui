@@ -1,10 +1,11 @@
 SRGUI Todo List
 -----------------
 
-	1. textfield arrow keys, shift.
-	2. provide extra constructors (size from text, default sizes, etc)
-	3. start menus?
-	4. groupbox?
+	1. provide extra constructors (size from text, default sizes, etc)
+	2. enter/lose focus events, use SDL2's textinput event instead of raw keypress
+	3. mouse down/move/up events needed for scroll bar
+	4. full text field?
+	5. start menus?
 
 Notes
 -------

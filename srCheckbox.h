@@ -25,10 +25,7 @@ public:
 		isChecked = v;
 		if( !parent ) return;
 
-		srControl* c = c->getParent();
-		while( c->getParent() ) c = c->getParent();
-
-		srWindow* win = dynamic_cast<srWindow*>(c);
+		srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
 		if( win ) win->setDirty();
 
 		return;
