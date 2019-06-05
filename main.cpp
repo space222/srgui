@@ -23,7 +23,6 @@ typedef std::pair<SDL_Surface*, srgui::srPoint> UserSurface;
 
 int main(int argc, char** args)
 {
-
 	SDL_Init(SDL_INIT_VIDEO);
 
 	SDL_Window* MainWindow = SDL_CreateWindow("SRGUI Tests", 0, 0, 1200,720, 0); //SDL_WINDOW_OPENGL
