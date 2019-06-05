@@ -5,7 +5,7 @@ SRGUI (pronounced Sir Gooey) stands for Simple Retained-mode Graphical User Inte
 
 Demo Screenshot:
 
-![Demo Screenshot](./docs/srgui5_27_19.png)
+![Demo Screenshot](./docs/srgui_demo.png)
 
 ## Usage
 
@@ -13,8 +13,7 @@ SRGUI works like any conventional GUI toolkit (eg Gtk+, Qt, win32, etc). The onl
 
 ## Backends / Dependencies
 
-The majority (currently all) of the rendering in SRGUI is done with Cairo. This may change when SRGUI is further along and the needed graphical operations are well established. Text rendering uses Pango, but other options (going latin-alphabet-only and using stb_truetype) have not been ruled out.
-The current demo uses SDL2 to get SRGUI to the screen.
+The majority (currently all) of the rendering in SRGUI is done with Cairo. This may change when SRGUI is further along and the needed graphical operations are well established. Text rendering uses Pango, but other options (HarfBuzz?) have not been ruled out. The current demo uses SDL2 to get SRGUI to the screen.
 
 ## Events / Thread Safety
 
@@ -22,6 +21,7 @@ SRGUI needs to be notified of events so that the UI can react to the keyboard an
 
 ## Building the demo
 
+A Makefile is provided. However, the following one-liner will build the demo:
 g++ -std=c++17 *.cpp \`pkg-config --cflags --libs sdl2 cairo pangocairo\`
 
 
