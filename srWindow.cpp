@@ -172,6 +172,19 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 	return;
 }
 
+srWindow::~srWindow()
+{
+	delete caption_layout;
+	delete surface;	
+
+	for(srControl* c : children)
+	{
+		delete c;
+	}
+
+	return;
+}
+
 
 } //end of srgui namespace
 

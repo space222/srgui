@@ -119,6 +119,13 @@ void srRadioButton::setGroup(srRadioGroup* rg)
 	return;
 }
 
+srRadioButton::~srRadioButton()
+{
+	delete text_layout;
+	if( r_group ) r_group->remove(this);
+	return;
+}
+
 } //end of srgui namespace
 
 

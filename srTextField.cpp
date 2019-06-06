@@ -51,7 +51,7 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 	blink_on = true;
 	srRect text_rect, cursor_extents;
 	
-	if( info.key )
+	if( info.key && info.key != '\n' && info.key != '\r' )
 	{
 		text.insert(cursor_pos, 1, (char)info.key);
 		cursor_pos++;

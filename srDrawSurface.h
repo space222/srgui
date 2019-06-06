@@ -26,10 +26,12 @@ class srDrawSurface
  	 * for drawing to a surface. It will be more or less limited to 
 	 * what windows and widgets need in order to draw. Currently the
 	 * only implementation is a thin wrapper around a Cairo 
-	 * Image(memory) surface using Pango, but maybe eventually HarfBuzz and
-	 * Cairo for text (to enable static linking without copyleft).
+	 * Image(memory) surface using Pango--but maybe eventually HarfBuzz and
+	 * Cairo--for text (to enable static linking without copyleft).
 	 */
 public:
+	virtual ~srDrawSurface() { }
+
 	virtual void setSize(int width, int height) =0;
 
 	/* for debugging only */
@@ -89,6 +91,7 @@ class srCairoDrawSurface : public srDrawSurface
 {
 public:
 	srCairoDrawSurface(int Width, int Height);
+	virtual ~srCairoDrawSurface() {}
 
 	virtual void write_to_png(const std::string&) override;
 

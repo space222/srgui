@@ -11,6 +11,8 @@ class srButton : public srControl, public srIEvent
 {
 public:
 	srButton() : text_layout(nullptr) { flags = SR_CF_REPAINT_ON_HOVER | SR_CF_REPAINT_ON_LBUTTON_STATE; }
+	virtual ~srButton() { delete text_layout; }
+
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_BUTTON; }
 

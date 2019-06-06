@@ -48,6 +48,7 @@ void srProgressBar::draw(const srDrawInfo& info)
 	return;
 }
 
+/*
 void srProgressBar::setText(const std::string& s)
 {
 	text = s;
@@ -59,6 +60,7 @@ void srProgressBar::setText(const std::string& s)
 	text_layout->setText(text);
 	return;
 }
+*/
 
 } //end of srgui namespace
 

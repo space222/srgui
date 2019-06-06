@@ -2,27 +2,13 @@ SRGUI Todo List
 -----------------
 
 	1. provide extra constructors (size from text, default sizes, etc)
-	2. enter/lose focus events, use SDL2's textinput event instead of raw keypress
-	3. mouse down/move/up events needed for scroll bar
-	4. full text field?
-	5. start menus?
+	2. destructors
+	3. enter/lose focus events, use SDL2's textinput event instead of raw keypress
+	4. mouse down/move/up events needed for scroll bar
+	5. full text field?
+	6. start menus?
 
 Notes
 -------
 
-	*  layout managers.
-	   - some kind necessary for controls that can change shape in a way
-	     that moves other controls around (like Dear ImGui's Collapsing Header)
-	   - also affected by resize (especially controls that should stay relative
-			 to border, like caption decorator buttons)
-
-	* menu bar object layout
-		^ how to implement menus is going to be tricky. 
-		- a srMenuBar contains basically a list of srMenu.
-		- srMenu has a surface like a srWindow and can redraw on changing item attributes
-		- all access to items is through the srMenu.
-			^- there is NO srMenuItem
-		- thru srMenu an item can be given an action (display submenu, un/checked, funcall)
-		- srMenu is quite like a srWindow that will never move and only contains stacked 
-			selectable items.
-
+	

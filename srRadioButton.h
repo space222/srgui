@@ -14,6 +14,9 @@ class srRadioButton : public srControl, public srIEvent
 {
 public:
 	srRadioButton() : text_layout(nullptr), isChecked(false), r_group(nullptr) { flags = SR_CF_REPAINT_ON_LEFT_CLICK; }
+
+	virtual ~srRadioButton();
+
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_RADIOBUTTON; }
 
@@ -41,6 +44,8 @@ class srRadioGroup
 {
 public:
 	srRadioGroup() { }
+	virtual ~srRadioGroup() { }
+
 	srRadioGroup(std::initializer_list<srRadioButton*> i) : buttons(i) 
 	{
 		for(auto i = begin(buttons); i != end(buttons); ++i) (*i)->setGroup(this);

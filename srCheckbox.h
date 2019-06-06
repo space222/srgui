@@ -11,6 +11,8 @@ class srCheckbox : public srControl, public srIEvent
 {
 public:
 	srCheckbox() : isChecked(false), text_layout(nullptr) { flags = SR_CF_REPAINT_ON_LEFT_CLICK | SR_CF_REPAINT_ON_LBUTTON_STATE; }
+	virtual ~srCheckbox() { delete text_layout; }
+
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_CHECKBOX; }
 
