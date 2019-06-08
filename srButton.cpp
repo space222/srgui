@@ -52,7 +52,7 @@ void srButton::draw(const srDrawInfo& info)
 			surf->setColor(outlineColor + 0x222222);
 			surf->drawLine(newarea.x, newarea.y+newarea.height, newarea.x+newarea.width, newarea.y+newarea.height);
 			surf->drawLine(newarea.x+newarea.width, newarea.y, newarea.x+newarea.width, newarea.y+newarea.height);
-		} else if( info.flags & SR_DIF_MOUSE_OVER ) {
+		} else /* if( info.flags & SR_DIF_MOUSE_OVER ) */ {
 			surf->setColor(outlineColor + 0x222222);
 			surf->drawLine(newarea.x, newarea.y, newarea.x + newarea.width, newarea.y);
 			surf->drawLine(newarea.x, newarea.y, newarea.x, newarea.y+newarea.height);

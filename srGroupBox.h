@@ -12,6 +12,8 @@ class srGroupBox : public srControl, public srContainer
 {
 public:
 	srGroupBox() : text_layout(nullptr) { flags = 0; }
+	virtual ~srGroupBox() { delete text_layout; }
+
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_GROUPBOX; }
 

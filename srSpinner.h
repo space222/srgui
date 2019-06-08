@@ -13,7 +13,7 @@ class srSpinner : public srControl, public srContainer
 {
 public:
 	srSpinner(const srRect&);
-	~srSpinner() { delete text; delete up; delete down; }
+	virtual ~srSpinner() { delete text; delete up; delete down; }
 
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_SPINNER; }
