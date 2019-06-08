@@ -11,6 +11,8 @@ class srLabel : public srControl
 {
 public:
 	srLabel() : text_layout(nullptr) { flags = 0; }
+	srLabel(const std::string&, const srPoint&);
+
 	virtual ~srLabel() { delete text_layout; }
 
 	virtual void draw(const srDrawInfo&) override;

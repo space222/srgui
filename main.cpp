@@ -33,28 +33,25 @@ int main(int argc, char** args)
 	srgui::srWindow* srwin = srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1");
 	srgui::srCheckbox* chk = new srgui::srCheckbox();
 	srwin->addChild(chk);
-	srgui::srButton* but1 = new srgui::srButton();
+	srgui::srButton* but1 = new srgui::srButton("button 1", {50,50});
 	srwin->addChild(but1);
-	srgui::srButton* mcl = new srgui::srButton();
+	srgui::srButton* mcl = new srgui::srButton("X", {270,10});
+	mcl->setSize(20, 20);
 	srwin->addChild(mcl);
-
-	mcl->setArea({ 270, 10, 20, 20 });
-	mcl->setText("X");
 	mcl->onClick = []{ exit(0); };
+
 	chk->setArea({ 50, 110, 160, 20 });
 	chk->setText("This is <span color='blue'>checkbox</span>");
-	but1->setArea({ 50, 50, 100, 50 });
-	but1->setText("button 1");
+	
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
 	srgui::srWindow* win2 = srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2");
 
 	srgui::srRadioButton* rb1 = new srgui::srRadioButton();
 	srgui::srRadioButton* rb2 = new srgui::srRadioButton();
 	srgui::srRadioButton* rb3 = new srgui::srRadioButton();
-	srgui::srGroupBox* grpb = new srgui::srGroupBox();
-	grpb->setArea({ 40, 70, 150, 150 });
-	grpb->setText("Group box");
-	srgui::srLabel* lbl = new srgui::srLabel();
+	srgui::srGroupBox* grpb = new srgui::srGroupBox("Group box", {40, 70, 150, 150});
+	
+	srgui::srLabel* lbl = new srgui::srLabel("Labels! <b>Yay!</b>", {50, 42} );
 	win2->addChild(lbl);
 	win2->addChild(grpb);
 	grpb->addChild(rb1);
@@ -63,8 +60,8 @@ int main(int argc, char** args)
 	srgui::srSpinner* spin2 = new srgui::srSpinner({ 5, 80, 50, 50 });
 	grpb->addChild(spin2);
 
-	lbl->setArea({ 50, 42, 100, 20});
-	lbl->setText("Labels! <b>Yay!</b>");
+	//lbl->setArea({ 50, 42, 100, 20});
+	//lbl->setText();
 	rb1->setArea({ 5, 20, 100, 20});
 	rb1->setText("radio b1!");
 	rb2->setArea({ 5, 40, 100, 20});
@@ -75,12 +72,12 @@ int main(int argc, char** args)
 
 	srgui::srWindow* win3 = srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3");
 	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });
-	srgui::srTextField* fld = new srgui::srTextField();
-	srgui::srProgressBar* pb = new srgui::srProgressBar();
-	pb->setProgress(66);
-	pb->setArea({ 20, 160, 200, 30 });
-	fld->setArea({ 20, 120, 230, 30 });
+	srgui::srTextField* fld = new srgui::srTextField({ 20, 120, 230, 30 });
+	srgui::srProgressBar* pb = new srgui::srProgressBar({ 20, 160, 200, 30 });
+
 	fld->setText("and ");
+	pb->setProgress(66);
+
 	win3->addChild(fld);
 	win3->addChild(spin);
 	win3->addChild(pb);

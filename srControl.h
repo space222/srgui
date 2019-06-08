@@ -24,8 +24,13 @@ struct srEventInfo
 class srIEvent
 {
 public:
-	virtual void raiseClickEvent(const srEventInfo&) {};
-	virtual void raiseKeyPressEvent(const srEventInfo&) {};
+	virtual void raiseClickEvent(const srEventInfo&) {}
+	virtual void raiseKeyPressEvent(const srEventInfo&) {}
+	virtual void raiseGainFocusEvent(const srEventInfo&) {}
+	virtual void raiseLoseFocusEvent(const srEventInfo&) {}
+	virtual void raiseMouseDownEvent(const srEventInfo&) {}
+	virtual void raiseMouseUpEvent(const srEventInfo&) {}
+	virtual void raiseMouseMoveEvent(const srEventInfo&) {}
 };
 
 
@@ -39,6 +44,7 @@ public:
 	virtual void setFlags(uint64_t f) { flags = f; return; }
 	virtual void setArea(const srRect& r);
 	virtual void getArea(srRect& r) { r = area; return; }
+	virtual void setSize(int width, int height);
 
 	virtual void draw(const srDrawInfo&) =0;
 	virtual srControlType type() =0;

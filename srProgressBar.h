@@ -11,6 +11,8 @@ class srProgressBar : public srControl
 {
 public:
 	srProgressBar() /*: text_layout(nullptr)*/ { flags = 0; }
+	srProgressBar(const srRect&);
+
 	virtual void draw(const srDrawInfo&) override;
 	virtual srControlType type() override { return SR_CT_PROGRESSBAR; }
 

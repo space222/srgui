@@ -1,12 +1,10 @@
 SRGUI Todo List
 -----------------
 
-	1. provide extra constructors (size from text, default sizes, etc)
-	2. destructors
-	3. enter/lose focus events, use SDL2's textinput event instead of raw keypress
-	4. mouse down/move/up events needed for scroll bar
-	5. full text field?
-	6. start menus?
+	1. enter/lose focus events, use SDL2's textinput event instead of raw keypress
+	2. mouse down/move/up events needed for scroll bar
+	3. full text field?
+	4. start menus?
 
 Notes
 -------

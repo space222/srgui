@@ -14,6 +14,9 @@ public:
 	srTextField() : display_cursor(true), blink_on(true), 
 		cursor_last_change(std::chrono::system_clock::now()), blink_rate(1000), cursor_pos(0), 
 		scroll_offset(0), text(), text_layout(nullptr) { flags = SR_CF_REPAINT_WHILE_FOCUS; }
+
+	srTextField(const srRect&);
+
 	virtual ~srTextField() { delete text_layout; }
 
 	virtual void draw(const srDrawInfo&) override;

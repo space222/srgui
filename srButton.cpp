@@ -12,6 +12,25 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srButton::srButton(const std::string& s, const srPoint& p, int label_margin) : srButton()
+{
+	srRect te;
+
+	setText(s);
+
+	text_layout->getExtents(te);
+
+	if( label_margin < 0 )
+	{
+		// todo: part of UIStyle
+		label_margin = 25;
+	}
+
+	area = srRect{ p.x, p.y, te.width+label_margin, te.height+label_margin };
+
+	return;
+}
+
 void srButton::setText(const std::string& s)
 {
 	text = s;

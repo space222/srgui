@@ -12,6 +12,12 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srTextField::srTextField(const srRect& r) : srTextField()
+{
+	area = r;
+	return;
+}
+
 void srTextField::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;

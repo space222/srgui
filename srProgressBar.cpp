@@ -10,6 +10,12 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srProgressBar::srProgressBar(const srRect& r) : srProgressBar()
+{
+	area = r;
+	return;
+}
+
 void srProgressBar::setProgress(int p)
 {
 	progress = p;

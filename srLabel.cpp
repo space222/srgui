@@ -10,6 +10,19 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srLabel::srLabel(const std::string& s, const srPoint& p) : srLabel()
+{
+	srRect te;
+
+	setText(s);
+
+	text_layout->getExtents(te);
+
+	area = { p.x, p.y, te.width, te.height };
+
+	return;
+}
+
 void srLabel::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;

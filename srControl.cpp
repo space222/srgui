@@ -21,6 +21,15 @@ void srControl::setArea(const srRect& r)
 	return;
 }
 
+void srControl::setSize(int width, int height)
+{
+	area.width = width;
+	area.height = height;
+	srWindow* w = dynamic_cast<srWindow*>(getToplevelParent());
+	if(w) w->setDirty();
+	return;
+}
+
 } //end of srgui namespace
 
 

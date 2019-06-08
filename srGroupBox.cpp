@@ -10,6 +10,13 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srGroupBox::srGroupBox(const std::string& s, const srRect& r) : srGroupBox()
+{
+	setText(s);
+	area = r;
+	return;
+}
+
 void srGroupBox::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;
