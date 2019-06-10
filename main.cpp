@@ -16,6 +16,7 @@
 #include "srTextField.h"
 #include "srProgressBar.h"
 #include "srGroupBox.h"
+#include "srMenuBar.h"
 
 bool MainRunning = true;
 

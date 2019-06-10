@@ -65,6 +65,8 @@ public:
 	virtual void setChildFocus(srControl* c) { focus = c; return; }
 	virtual srControl* getChildFocus() { return focus; }
 
+	srControl* overlay;
+
 	virtual void setFlags(uint64_t f) override { flags = f; isdirty = true; return; }
 
 	friend void SendEvent(srEventType event, int data0, int data1, int data2, int data3);

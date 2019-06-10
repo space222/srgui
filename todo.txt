@@ -1,10 +1,11 @@
 SRGUI Todo List
 -----------------
 
-	1. enter/lose focus events, use SDL2's textinput event instead of raw keypress
-	2. mouse down/move/up events needed for scroll bar
-	3. full text field?
-	4. start menus?
+	1. started menus, might as well get them working
+	2. enter/lose focus events, use SDL2's textinput event instead of raw keypress
+	3. mouse down/move/up events needed for scroll bar
+	4. full text field?
+	
 
 Notes
 -------
