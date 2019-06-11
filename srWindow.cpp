@@ -28,6 +28,7 @@ srWindow::srWindow(int w, int h, srDrawSurface* draw)
 	area.height = h;
 	parent = nullptr;
 	focus = nullptr;
+	overlay = nullptr;
 	surface = draw;
 	caption_layout = nullptr;
 }

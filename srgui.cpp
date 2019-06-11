@@ -141,6 +141,8 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			{
 				srgui_data.windows[0]->setDirty();
 			}
+			srIEvent* ev = dynamic_cast<srIEvent*>(fc);
+			if( ev ) ev->raiseLoseFocusEvent({});
 			srgui_data.windows[0]->setChildFocus(nullptr);
 			
 			// find and pull up the new window
@@ -182,8 +184,17 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 
 		if( srgui_data.mouse_over && srgui_data.mouse_over.child )
 		{
+			if( srgui_data.mouse_over.child != fc )
+			{
+				srIEvent* ev = dynamic_cast<srIEvent*>(fc);
+				if( ev ) ev->raiseLoseFocusEvent({});
+				ev = dynamic_cast<srIEvent*>(srgui_data.mouse_over.child);
+				if( ev ) ev->raiseGainFocusEvent({});
+			}
 			srgui_data.windows[0]->setChildFocus(srgui_data.mouse_over.child);
 		} else {
+			srIEvent* ev = dynamic_cast<srIEvent*>(fc);
+			if( ev ) ev->raiseLoseFocusEvent({});
 			srgui_data.windows[0]->setChildFocus(nullptr);
 		}
 
@@ -312,8 +323,6 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 	{
 		srWindow* win = *i;
 
-		/* TODO: open menus, comboboxes, etc */
-
 		srControl* fc = win->getChildFocus();
 		
 		if( win->getDirty() || (fc && (fc->flags & SR_CF_REPAINT_WHILE_FOCUS)) )
@@ -324,6 +333,17 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 
 		tasks.emplace_back(win->surface, win->area, win->getDirty());
 		win->isdirty = false;
+
+		srControl* ovly = win->overlay;
+		if( !ovly ) continue;
+
+		//TODO: how to get surface out of overlay
+		// if( ovly->getDirty() )
+		// {
+		// 	ovly->draw(srDrawInfo{ovly->surface, (srDrawInfoFlags) 0, 
+		//			{srgui_data.mouse_pos.x-ovly->area.x, srgui_data.mouse_pos.y-ovly->area.y}, {0,0}});
+		// }
+		// tasks.emplace_back(ovly->surface, ovly->area, ovly->getDirty());
 	}
 
 	return;

@@ -94,6 +94,18 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 	return;
 }
 
+void srTextField::raiseGainFocusEvent(const srEventInfo& info)
+{
+	//std::puts("Gain Text Focus\n");
+	return;
+}
+
+void srTextField::raiseLoseFocusEvent(const srEventInfo& info)
+{
+	//std::puts("Lose Text Focus\n");
+	return;
+}
+
 void srTextField::raiseClickEvent(const srEventInfo& info)
 {
 	srPoint p = info.mouse;

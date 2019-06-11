@@ -21,6 +21,10 @@ struct srEventInfo
 	uint32_t mods, key;
 };
 
+/* srIEvent: some event functions do not actually recv. any data
+ * in srEventInfo, but take one anyway for consistency and future
+ * use. (Focus events, specifically, currently)
+ */
 class srIEvent
 {
 public:

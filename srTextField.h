@@ -27,6 +27,8 @@ public:
 
 	virtual void setBlinkRate(int br) { blink_rate = br; return; }
 
+	virtual void raiseGainFocusEvent(const srEventInfo& info) override;
+	virtual void raiseLoseFocusEvent(const srEventInfo& info) override;
 	virtual void raiseKeyPressEvent(const srEventInfo& info) override;
 	virtual void raiseClickEvent(const srEventInfo& info) override;
 
