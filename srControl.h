@@ -17,8 +17,10 @@ public:
 
 struct srEventInfo
 {
+	/* mouse is absolute everywhere but raiseMouseMoveEvent, which sends relative movement */
 	srPoint mouse;
 	uint32_t mods, key;
+	int mouse_button;
 };
 
 /* srIEvent: some event functions do not actually recv. any data

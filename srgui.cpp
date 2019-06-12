@@ -171,9 +171,15 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 
 		switch( button )
 		{
-		case 1: srgui_data.mouse_l_down = srgui_data.mouse_over; break;
-		case 2: srgui_data.mouse_m_down = srgui_data.mouse_over; break;
+		case 1:	srgui_data.mouse_l_down = srgui_data.mouse_over; break;
+		case 2:	srgui_data.mouse_m_down = srgui_data.mouse_over; break;
 		case 3: srgui_data.mouse_r_down = srgui_data.mouse_over; break;
+		}
+
+		if(srControl *c = srgui_data.mouse_over.child; c )
+		{
+			srIEvent* ev = dynamic_cast<srIEvent*>(c);
+			if( ev ) ev->raiseMouseDownEvent({get_control_relative_point(srgui_data.windows[0], c, {x,y}), 0,0,button});
 		}
 
 		srControl* fc = srgui_data.windows[0]->getChildFocus();
@@ -274,6 +280,12 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		{
 			old.window->setDirty();
 		}
+
+		if( srControl* c = srgui_data.mouse_l_down.child;  c )
+		{
+			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
+			if( ev ) ev->raiseMouseMoveEvent({get_control_relative_point(W, c, {relx,rely}), 0,0,1});
+		}
 	} //end of mouse move
 
 	if( event == SR_EVENT_MOUSE_UP )
@@ -310,7 +322,13 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srgui_data.mouse_r_down.clear();
 			break;
 		}
-	}
+
+		if( srControl* c = srgui_data.mouse_l_down.child;  c )
+		{
+			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
+			if( ev ) ev->raiseMouseUpEvent({get_control_relative_point(srgui_data.mouse_l_down.window, c, {x,y}), 0,0,1});
+		}
+	} //end of mouse up
 
 	return;
 }
