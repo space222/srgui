@@ -33,7 +33,7 @@ bool srSpinner::point_in_child(uint32_t index, const srPoint& p)
 	return point_in_rect(down_area, p);
 }
 
-bool parse_int(const std::string str, int &val)
+bool parse_int(const std::string& str, int &val)
 {
 	try {
 		size_t pos = 0;

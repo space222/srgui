@@ -20,7 +20,7 @@ class srDrawSurface;
 class srMenu : public srControl, public srIEvent
 {
 public:
-	srMenu() : text(), dirty(true) { }
+	srMenu() : text(), dirty(true), surface(nullptr) { }
 
 	void setText(const std::string& s)
 	{
