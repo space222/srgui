@@ -91,7 +91,7 @@ class srCairoDrawSurface : public srDrawSurface
 {
 public:
 	srCairoDrawSurface(int Width, int Height);
-	virtual ~srCairoDrawSurface() {}
+	virtual ~srCairoDrawSurface() { cairo_destroy(ct); delete[] buffer; }
 
 	virtual void write_to_png(const std::string&) override;
 

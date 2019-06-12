@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstdint>
 #include <utility>
+#include <memory>
 #include <SDL.h>
 #include "srgui.h"
 #include "srWindow.h"
@@ -21,6 +22,7 @@
 bool MainRunning = true;
 
 typedef std::pair<SDL_Surface*, srgui::srPoint> UserSurface;
+using std::unique_ptr;
 
 int main(int argc, char** args)
 {
@@ -31,7 +33,7 @@ int main(int argc, char** args)
 
 	srgui::initialize();
 
-	srgui::srWindow* srwin = srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1");
+	unique_ptr<srgui::srWindow> srwin(srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1"));
 	srgui::srCheckbox* chk = new srgui::srCheckbox();
 	srwin->addChild(chk);
 	srgui::srButton* but1 = new srgui::srButton("button 1", {50,50});
@@ -45,7 +47,7 @@ int main(int argc, char** args)
 	chk->setText("This is <span color='blue'>checkbox</span>");
 	
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
-	srgui::srWindow* win2 = srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2");
+	unique_ptr<srgui::srWindow> win2(srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2"));
 
 	srgui::srRadioButton* rb1 = new srgui::srRadioButton();
 	srgui::srRadioButton* rb2 = new srgui::srRadioButton();
@@ -69,9 +71,9 @@ int main(int argc, char** args)
 	rb2->setText("radio b2!");
 	rb3->setArea({ 5, 60, 100, 20});
 	rb3->setText("radio b3!");
-	/* srgui::srRadioGroup* rg = */new srgui::srRadioGroup{ rb1, rb2, rb3  };
+	unique_ptr<srgui::srRadioGroup> rg(new srgui::srRadioGroup{ rb1, rb2, rb3  });
 
-	srgui::srWindow* win3 = srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3");
+	unique_ptr<srgui::srWindow> win3(srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3"));
 	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });
 	srgui::srTextField* fld = new srgui::srTextField({ 20, 120, 230, 30 });
 	srgui::srProgressBar* pb = new srgui::srProgressBar({ 20, 160, 200, 30 });
@@ -183,6 +185,8 @@ int main(int argc, char** args)
 		
 		SDL_UpdateWindowSurface(MainWindow);	
 	}
+
+	SDL_Quit();
 
 	return 0;
 }

@@ -79,7 +79,7 @@ void srPangoTextLayout::setText(const std::string& text)
 		pango_layout_set_attributes(layout, attrlist);
 		pango_layout_set_text(layout, output, -1);
 		pango_attr_list_unref(attrlist);
-		std::free(output);
+		g_free(output);
 	}
 	
 	return;
