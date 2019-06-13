@@ -5,6 +5,7 @@
 namespace srgui {
 
 class srControl;
+class srDrawSurface;
 
 class srContainer
 {
@@ -13,6 +14,15 @@ public:
 	virtual bool point_in_child(uint32_t index, const srPoint& p) =0;
 	virtual void addChild(srControl*) =0;
 	virtual uint32_t getNumChildren() =0;
+};
+
+class srIOverlay
+{
+public:
+	virtual srDrawSurface* getSurface() =0;
+	virtual bool getDirty() =0;
+	virtual void clearDirty() =0;
+	virtual void setDirty() =0;
 };
 
 struct srEventInfo

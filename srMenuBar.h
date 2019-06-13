@@ -4,6 +4,7 @@
 #include <functional>
 #include "srgui.h"
 #include "srControl.h"
+#include "srWindow.h"
 
 namespace srgui {
 
@@ -17,10 +18,16 @@ struct srMenuItem
 
 class srDrawSurface;
 
-class srMenu : public srControl, public srIEvent
+class srMenu : public srControl, public srIOverlay, public srIEvent
 {
 public:
-	srMenu() : text(), dirty(true), surface(nullptr) { }
+	srMenu() : text(), dirty(true), surface(nullptr), text_layout(nullptr) { }
+	virtual ~srMenu() { delete surface; delete text_layout; }
+
+	virtual srDrawSurface* getSurface() override { return surface; }
+	virtual void setDirty() override { dirty = true; return; }
+	virtual bool getDirty() override { return dirty; }
+	virtual void clearDirty() override { dirty = false; return; }
 
 	void setText(const std::string& s)
 	{
@@ -50,6 +57,8 @@ public:
 	{
 		int retval = items.size();
 		items = std::vector<srMenuItem>(itms);
+		dirty = true;
+		resize();
 		return retval;
 	}
 
@@ -57,6 +66,8 @@ public:
 	{
 		int retval = items.size();
 		items.emplace_back(s, fn);
+		dirty = true;
+		resize();
 		return retval;
 	}
 
@@ -64,19 +75,23 @@ public:
 	{
 		if( index >= items.size() ) return;
 		items.erase(begin(items)+index);
+		dirty = true;
+		resize();
 		return;
 	}
 
-	void draw(const srDrawInfo& info);
-	void setDirty() { dirty = true; }
-
+	virtual void draw(const srDrawInfo& info) override;
+	
 	friend void generateDrawList(std::vector<srRenderTask>& tasks);
 	friend class srMenuBar;
 protected:
+	void resize();
+
 	bool dirty;
 	std::string text;
 	std::vector<srMenuItem> items;
 	srDrawSurface* surface;
+	srPangoTextLayout* text_layout;
 };
 
 class srMenuBar : public srControl, public srIEvent
@@ -91,6 +106,14 @@ public:
 
 	virtual void raiseClickEvent(const srEventInfo&) override;
 	virtual void draw(const srDrawInfo& info) override;
+
+	virtual void add(srMenu* menu)
+	{
+		menus.push_back(menu);
+		srWindow* w = dynamic_cast<srWindow*>(getToplevelParent());
+		if( w ) w->setDirty();
+		return;
+	}
 
 protected:
 	std::vector<srMenu*> menus;
