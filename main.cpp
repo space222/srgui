@@ -24,6 +24,17 @@ bool MainRunning = true;
 typedef std::pair<SDL_Surface*, srgui::srPoint> UserSurface;
 using std::unique_ptr;
 
+void sdl_text_focus_callback(bool on)
+{
+	if( on )
+	{
+		SDL_StartTextInput();
+	} else {
+		SDL_StopTextInput();
+	}
+	return;
+}
+
 int main(int argc, char** args)
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -32,6 +43,8 @@ int main(int argc, char** args)
 	SDL_Surface* MainWindowSurf = SDL_GetWindowSurface(MainWindow);
 
 	srgui::initialize();
+
+	srgui::setTextFocusCallback(sdl_text_focus_callback);
 
 	unique_ptr<srgui::srWindow> srwin(srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1"));
 	srgui::srCheckbox* chk = new srgui::srCheckbox();
@@ -92,25 +105,22 @@ int main(int argc, char** args)
 		{
 			switch( event.type )
 			{
-			case SDL_KEYDOWN:
-				{
-					int k = event.key.keysym.sym;
-					int m = 0;
-					if( event.key.keysym.sym & 0x40000000 ) break;
-					if( event.key.keysym.scancode == SDL_SCANCODE_DELETE )
-					{
-						m |= (1<<16);
-						k = 0;
-					} else if( event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE ) {
-						m |= (1<<17);
-						k = 0;
-					} else if( event.key.keysym.mod & KMOD_SHIFT ) {
-						k = std::toupper(k);
-					}
-
-					srgui::SendEvent(srgui::SR_EVENT_KEY_PRESS, event.key.keysym.mod|m, k, 0,0);
-				}
+			case SDL_TEXTINPUT:
+				srgui::SendEvent(srgui::SR_EVENT_KEY_PRESS, 0, event.text.text[0], 0, 0);
 				break;
+			case SDL_KEYDOWN:{
+				int m = 0;
+				bool k = false;
+				if( event.key.keysym.scancode == SDL_SCANCODE_DELETE )
+				{
+					m |= (1<<16);
+					k = true;
+				} else if( event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE ) {
+					m |= (1<<17);
+					k = true;
+				}
+				if( k ) srgui::SendEvent(srgui::SR_EVENT_KEY_PRESS, m, 0, 0,0);
+				}break;
 			case SDL_MOUSEMOTION:
 			srgui::SendEvent(srgui::SR_EVENT_MOUSE_MOVE, event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
 				break;

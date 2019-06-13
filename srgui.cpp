@@ -367,6 +367,12 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 	return;
 }
 
+void setTextFocusCallback(const std::function<void(bool)>& cb)
+{
+	srgui_data.text_focus_callback = cb;
+	return;
+}
+
 
 }; //end of namespace srgui
 

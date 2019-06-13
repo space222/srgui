@@ -130,6 +130,7 @@ srWindow* CreateWindow(const srRect& extents, void* userData, const std::string&
 /* the most raw way to send an event. pass zero for unused data parameters */
 void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
 
+void setTextFocusCallback(const std::function<void(bool)>&);
 
 struct system_data 
 {
@@ -146,6 +147,8 @@ struct system_data
 
 	srPoint mouse_pos;
 	srLookAndFeel UIStyle;
+
+	std::function<void(bool)> text_focus_callback;
 };
 
 }; //end of srgui namespace

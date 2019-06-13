@@ -96,13 +96,13 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 
 void srTextField::raiseGainFocusEvent(const srEventInfo& info)
 {
-	//std::puts("Gain Text Focus\n");
+	if( srgui_data.text_focus_callback ) srgui_data.text_focus_callback(true);
 	return;
 }
 
 void srTextField::raiseLoseFocusEvent(const srEventInfo& info)
 {
-	//std::puts("Lose Text Focus\n");
+	if( srgui_data.text_focus_callback ) srgui_data.text_focus_callback(false);
 	return;
 }
 
