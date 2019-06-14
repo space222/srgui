@@ -144,6 +144,9 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srIEvent* ev = dynamic_cast<srIEvent*>(fc);
 			if( ev ) ev->raiseLoseFocusEvent({});
 			srgui_data.windows[0]->setChildFocus(nullptr);
+
+			// old window gets overlay controls (just menus for now) closed
+			srgui_data.windows[0]->overlay = nullptr;
 			
 			// find and pull up the new window
 			for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
@@ -220,6 +223,8 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		int relx = data2;
 		int rely = data3;
 		srgui_data.mouse_pos = {x,y};
+		srInputTracker old = srgui_data.mouse_over;
+		srgui_data.mouse_over.child = nullptr;
 
 		if( srgui_data.caption_move )
 		{
@@ -236,45 +241,61 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			return;
 		}
 
-		srWindow* W = nullptr;
-		for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
+		if( srgui_data.windows[0] && srgui_data.windows[0]->overlay )
 		{
-			srWindow* temp = srgui_data.windows[i];
 			srRect r;
-			temp->getArea(r);
-			if( ! point_in_rect(r, {x,y}) ) continue;
+			srgui_data.windows[0]->overlay->getArea(r);
 
-			W = temp;
-			break;
-		}
-
-		srInputTracker old = srgui_data.mouse_over;
-		srgui_data.mouse_over.child = nullptr;
-
-		if( W )
-		for(uint32_t i = 0; i < W->getNumChildren(); ++i)
-		{
-			if( ! W->point_in_child(i, {x,y} ) ) continue;
-		
-			srControl* C1 = srgui_data.mouse_over.child = W->getChild(i);
-			srContainer* con = dynamic_cast<srContainer*>(C1);
-			if( con ) 
+			if( point_in_rect(r, {x,y}) )
 			{
-				srRect r, wr;
-				C1->getArea(r);
-				W->getArea(wr);
-				srControl* temp = find_in_container(con, { (x - wr.x) - r.x, (y - wr.y) - r.y });
-				if( temp ) srgui_data.mouse_over.child = temp;
+				// Mouse pointer is over the top window's overlay
+				// can set window and child to window and overlay control.
+				// Can't return early, something else might require redraw
+				// because of no longer hovering.
+				srgui_data.mouse_over.window = srgui_data.windows[0];
+				srgui_data.mouse_over.child = srgui_data.windows[0]->overlay;
 			}
 
-			if( srgui_data.mouse_over.child->getFlags() & SR_CF_REPAINT_ON_HOVER )
-			{
-				W->setDirty();
-			}
-			break;
-		}
+		} else {
 
-		srgui_data.mouse_over.window = W;
+			srWindow* W = nullptr;
+			
+			for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
+			{
+				srWindow* temp = srgui_data.windows[i];
+				srRect r;
+				temp->getArea(r);
+				if( ! point_in_rect(r, {x,y}) ) continue;
+
+				W = temp;
+				break;
+			}
+
+			if( W )
+			for(uint32_t i = 0; i < W->getNumChildren(); ++i)
+			{
+				if( ! W->point_in_child(i, {x,y} ) ) continue;
+			
+				srControl* C1 = srgui_data.mouse_over.child = W->getChild(i);
+				srContainer* con = dynamic_cast<srContainer*>(C1);
+				if( con ) 
+				{
+					srRect r, wr;
+					C1->getArea(r);
+					W->getArea(wr);
+					srControl* temp = find_in_container(con, { (x - wr.x) - r.x, (y - wr.y) - r.y });
+					if( temp ) srgui_data.mouse_over.child = temp;
+				}
+
+				if( srgui_data.mouse_over.child->getFlags() & SR_CF_REPAINT_ON_HOVER )
+				{
+					W->setDirty();
+				}
+				break;
+			}
+
+			srgui_data.mouse_over.window = W;
+		}
 
 		if( old && old.child && (old.child->getFlags() & SR_CF_REPAINT_ON_HOVER) )
 		{
@@ -284,7 +305,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		if( srControl* c = srgui_data.mouse_l_down.child;  c )
 		{
 			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
-			if( ev ) ev->raiseMouseMoveEvent({get_control_relative_point(W, c, {relx,rely}), 0,0,1});
+			if( ev ) ev->raiseMouseMoveEvent({get_control_relative_point(srgui_data.mouse_l_down.window, c, {relx,rely}), 0,0,1});
 		}
 	} //end of mouse move
 
@@ -352,16 +373,19 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 		tasks.emplace_back(win->surface, win->area, win->getDirty());
 		win->isdirty = false;
 
-		srControl* ovly = win->overlay;
+		srIOverlay* ovly = dynamic_cast<srIOverlay*>(win->overlay);
 		if( !ovly ) continue;
 
-		//TODO: how to get surface out of overlay
-		// if( ovly->getDirty() )
-		// {
-		// 	ovly->draw(srDrawInfo{ovly->surface, (srDrawInfoFlags) 0, 
-		//			{srgui_data.mouse_pos.x-ovly->area.x, srgui_data.mouse_pos.y-ovly->area.y}, {0,0}});
-		// }
-		// tasks.emplace_back(ovly->surface, ovly->area, ovly->getDirty());
+		srRect oca;
+		win->overlay->getArea(oca);
+
+		if( ovly->getDirty() )
+		{
+			win->overlay->draw(srDrawInfo{ovly->getSurface(), (srDrawInfoFlags) 0, 
+					{srgui_data.mouse_pos.x-oca.x, srgui_data.mouse_pos.y-oca.y}, {0,0}});
+			ovly->clearDirty();
+		}
+		tasks.emplace_back(ovly->getSurface(), oca, ovly->getDirty());
 	}
 
 	return;
