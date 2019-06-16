@@ -1,8 +1,7 @@
 SRGUI Todo List
 -----------------
 
-	1. test mouse down/move/up events by implementing horizontal scrollbar
-		 and attaching it to text field in the demo.
+	1. attach horizontal scrollbar to text field in demo
 	2. started menus, might as well get them working
 	3. TextField: move on to getting arrow keys and selection(!) working
 	4. full text area?

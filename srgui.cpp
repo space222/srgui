@@ -55,6 +55,11 @@ srPoint get_control_relative_point(srWindow* win, srControl* c, const srPoint& p
 	srRect win_area, c_area;
 	win->getArea(win_area);
 	c->getArea(c_area);
+
+	if( win->overlay == c )
+	{
+		return { p.x - c_area.x, p.y - c_area.y };
+	}
 	
 	srPoint res{ (p.x - win_area.x), (p.y - win_area.y) };
 	
@@ -305,7 +310,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		if( srControl* c = srgui_data.mouse_l_down.child;  c )
 		{
 			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
-			if( ev ) ev->raiseMouseMoveEvent({get_control_relative_point(srgui_data.mouse_l_down.window, c, {relx,rely}), 0,0,1});
+			if( ev ) ev->raiseMouseMoveEvent({{relx,rely}, 0,0,1});
 		}
 	} //end of mouse move
 
@@ -334,7 +339,6 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			{
 				srgui_data.mouse_l_down.window->setDirty();
 			}
-			srgui_data.mouse_l_down.clear();
 			break;
 		case 2:
 			srgui_data.mouse_m_down.clear();
@@ -349,6 +353,8 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
 			if( ev ) ev->raiseMouseUpEvent({get_control_relative_point(srgui_data.mouse_l_down.window, c, {x,y}), 0,0,1});
 		}
+
+		srgui_data.mouse_l_down.clear();
 	} //end of mouse up
 
 	return;

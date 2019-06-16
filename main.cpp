@@ -18,6 +18,7 @@
 #include "srProgressBar.h"
 #include "srGroupBox.h"
 #include "srMenuBar.h"
+#include "srHScrollBar.h"
 
 bool MainRunning = true;
 
@@ -55,6 +56,10 @@ int main(int argc, char** args)
 	mcl->setSize(20, 20);
 	srwin->addChild(mcl);
 	mcl->onClick = []{ exit(0); };
+
+	srgui::srHScrollBar *scl = new srgui::srHScrollBar({ 45, 180, 150, 20 });
+	scl->setScrollInfo(200, 30);
+	srwin->addChild(scl);
 
 	chk->setArea({ 50, 110, 160, 20 });
 	chk->setText("This is <span color='blue'>checkbox</span>");
