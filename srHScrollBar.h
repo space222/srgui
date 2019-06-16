@@ -34,6 +34,8 @@ public:
 	virtual void raiseMouseDownEvent(const srEventInfo&) override;
 	virtual void raiseClickEvent(const srEventInfo&) override;
 
+	std::function<void()> onScroll;
+
 	virtual int getValue() { return value; }
 	virtual void setScrollInfo(int max, int page_sz)
 	{

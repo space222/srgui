@@ -90,6 +90,13 @@ void srTextField::raiseKeyPressEvent(const srEventInfo& info)
 		text_layout->setText(text);
 	}
 
+	if( onChange ) onChange();
+
+	return;
+}
+
+void srTextField::setScroll(int p)
+{
 
 	return;
 }

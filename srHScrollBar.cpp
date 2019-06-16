@@ -64,9 +64,12 @@ void srHScrollBar::raiseMouseMoveEvent(const srEventInfo& ev)
 {
 	if( ! in_thumb_move ) return;
 
-	value += ev.mouse.x<<1;  /* I have no idea why the exact relative amount is too slow, but *2 feels good */
+	value += ev.mouse.x + (ev.mouse.x/2);  // using X straight lags, but more is a bit too fast
+				// sticking with faster because lagging is more irritating to use
 	if( value > max ) value = max;
 	else if( value < 0 ) value = 0;
+
+	if( onScroll ) onScroll();
 
 	return;
 }
@@ -86,9 +89,11 @@ void srHScrollBar::raiseMouseUpEvent(const srEventInfo& ev)
 		{
 			value -= page_size;
 			if( value < 0 ) value = 0;
+			if( onScroll ) onScroll();
 		} else if( ev.mouse.x > (thumb_loc + thumb_size) ) {
 			value += page_size;
 			if( value > max ) value = max;
+			if( onScroll ) onScroll();
 		}
 	}
 

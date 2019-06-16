@@ -25,12 +25,15 @@ public:
 	virtual void setText(const std::string& str);
 	virtual std::string getText() { return text; }
 
+	virtual void setScroll(int);
 	virtual void setBlinkRate(int br) { blink_rate = br; return; }
 
 	virtual void raiseGainFocusEvent(const srEventInfo& info) override;
 	virtual void raiseLoseFocusEvent(const srEventInfo& info) override;
 	virtual void raiseKeyPressEvent(const srEventInfo& info) override;
 	virtual void raiseClickEvent(const srEventInfo& info) override;
+
+	std::function<void()> onChange;
 
 protected:
 	bool display_cursor, blink_on;

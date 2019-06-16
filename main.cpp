@@ -57,10 +57,6 @@ int main(int argc, char** args)
 	srwin->addChild(mcl);
 	mcl->onClick = []{ exit(0); };
 
-	srgui::srHScrollBar *scl = new srgui::srHScrollBar({ 45, 180, 150, 20 });
-	scl->setScrollInfo(200, 30);
-	srwin->addChild(scl);
-
 	chk->setArea({ 50, 110, 160, 20 });
 	chk->setText("This is <span color='blue'>checkbox</span>");
 	
@@ -94,14 +90,17 @@ int main(int argc, char** args)
 	unique_ptr<srgui::srWindow> win3(srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3"));
 	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });
 	srgui::srTextField* fld = new srgui::srTextField({ 20, 120, 230, 30 });
-	srgui::srProgressBar* pb = new srgui::srProgressBar({ 20, 160, 200, 30 });
-
+	srgui::srProgressBar* pb = new srgui::srProgressBar({ 20, 190, 200, 30 });
+	srgui::srHScrollBar *scl = new srgui::srHScrollBar({ 20, 150, 230, 20 });
+	scl->setScrollInfo(200, 30);
+	
 	fld->setText("and ");
 	pb->setProgress(66);
 
 	win3->addChild(fld);
 	win3->addChild(spin);
 	win3->addChild(pb);
+	win3->addChild(scl);
 
 	while( MainRunning )
 	{
