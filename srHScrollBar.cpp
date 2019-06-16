@@ -36,7 +36,7 @@ srHScrollBar::srHScrollBar(const srRect& a)
 		: value(50), page_size(10), max(200), thumb_loc(0), thumb_size(5), in_thumb_move(false)
 {
 	area = a;
-	flags = SR_CF_REPAINT_ON_LBUTTON_STATE | SR_CF_REPAINT_ON_HOVER;
+	flags = SR_CF_REPAINT_ON_LBUTTON_STATE | SR_CF_REPAINT_ON_MOUSE_MOVE;
 	left = new srButton("\u2BC7", { 0, 0 });
 	left->setSize(20, area.height);
 	right = new srButton("\u2BC8", { (int)area.width - 20, 0 });

@@ -309,6 +309,8 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 
 		if( srControl* c = srgui_data.mouse_l_down.child;  c )
 		{
+			if( c->flags & SR_CF_REPAINT_ON_MOUSE_MOVE ) srgui_data.mouse_l_down.window->setDirty();
+			
 			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
 			if( ev ) ev->raiseMouseMoveEvent({{relx,rely}, 0,0,1});
 		}
