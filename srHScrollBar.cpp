@@ -123,7 +123,7 @@ void srHScrollBar::draw(const srDrawInfo& info)
 
 	int xval = 21 + (int)((value / (float)max)*(area.width-42-ts)) + newarea.x;
 
-	surf->drawRectangle({ xval, newarea.y, (uint32_t)ts, area.height });
+	surf->drawRectangle({ xval, newarea.y, ts, area.height });
 	surf->setColor(0xFFFFFF);
 	surf->drawLine( xval+1, newarea.y+1, xval+ts, newarea.y+1, 1 );
 	surf->drawLine( xval+1, newarea.y+1, xval+1,  newarea.y+area.height-1, 1 );

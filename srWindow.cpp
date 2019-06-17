@@ -67,7 +67,7 @@ void srWindow::draw(const srDrawInfo& info)
 		}
 	
 		surface->drawTopRoundedRect({srgui_data.UIStyle.windowCaptionOffset.x, srgui_data.UIStyle.windowCaptionOffset.y,
-					area.width - srgui_data.UIStyle.windowCaptionOffset.x, srgui_data.UIStyle.windowCaptionHeight},
+					area.width - srgui_data.UIStyle.windowCaptionOffset.x, (int)srgui_data.UIStyle.windowCaptionHeight},
 						srgui_data.UIStyle.windowCaptionRounding);
 		
 		if( ! caption_layout )

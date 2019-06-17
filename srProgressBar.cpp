@@ -44,7 +44,7 @@ void srProgressBar::draw(const srDrawInfo& info)
 	surf->drawLine(origin.x+na.width, origin.y, origin.x+na.width, origin.y+na.height, 1);
 
 	surf->setColor(0xA8); //srgui_data.UIStyle.textSelection
-	surf->drawRectangle({origin.x+3, origin.y+3,(uint32_t) ((area.width*(progress/100.0f))-3), area.height-6});
+	surf->drawRectangle({origin.x+3, origin.y+3, (int)((area.width*(progress/100.0f))-3), area.height-6});
 
 	//srRect r;
 	//text_layout->getExtents(r);

@@ -30,6 +30,7 @@ class srDrawSurface
 	 * Cairo--for text (to enable static linking without copyleft).
 	 */
 public:
+	srDrawSurface() : userData(nullptr) {}
 	virtual ~srDrawSurface() { }
 
 	virtual void setSize(int width, int height) =0;

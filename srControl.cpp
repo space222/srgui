@@ -13,6 +13,14 @@ srControl* srControl::getToplevelParent()
 	return c;
 }
 
+void srControl::setVisible(bool b)
+{
+	visible = b;
+	srWindow* W = dynamic_cast<srWindow*>(getToplevelParent());
+	if( W ) W->setDirty();
+	return;
+}
+
 void srControl::setArea(const srRect& r) 
 {
 	area = r;

@@ -39,7 +39,7 @@ void setDefaultStyle()
 	laf.buttonBackground = 0xc0c0be;
 	laf.buttonRounding = 0;
 	laf.buttonOutline = 0x3030A0;
-
+	laf.itemSelectionColor = 0x7070FF;
 	laf.textBackground = 0xF0F0F0;
 	return;
 }
@@ -246,21 +246,15 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			return;
 		}
 
-		if( srgui_data.windows[0] && srgui_data.windows[0]->overlay )
+		if( srgui_data.windows[0] && srgui_data.windows[0]->overlay
+				 && point_in_rect(srgui_data.windows[0]->overlay->area, {x,y}) )
 		{
-			srRect r;
-			srgui_data.windows[0]->overlay->getArea(r);
-
-			if( point_in_rect(r, {x,y}) )
-			{
-				// Mouse pointer is over the top window's overlay
-				// can set window and child to window and overlay control.
-				// Can't return early, something else might require redraw
-				// because of no longer hovering.
-				srgui_data.mouse_over.window = srgui_data.windows[0];
-				srgui_data.mouse_over.child = srgui_data.windows[0]->overlay;
-			}
-
+			// Mouse pointer is over the top window's overlay
+			// can set window and child to window and overlay control.
+			// Can't return early, something else might require redraw
+			// because of no longer hovering.
+			srgui_data.mouse_over.window = srgui_data.windows[0];
+			srgui_data.mouse_over.child = srgui_data.windows[0]->overlay;
 		} else {
 
 			srWindow* W = nullptr;
@@ -383,7 +377,7 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 
 		srIOverlay* ovly = dynamic_cast<srIOverlay*>(win->overlay);
 		if( !ovly ) continue;
-
+		
 		srRect oca;
 		win->overlay->getArea(oca);
 

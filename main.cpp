@@ -50,14 +50,23 @@ int main(int argc, char** args)
 	unique_ptr<srgui::srWindow> srwin(srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1"));
 	srgui::srCheckbox* chk = new srgui::srCheckbox();
 	srwin->addChild(chk);
-	srgui::srButton* but1 = new srgui::srButton("button 1", {50,50});
+	srgui::srButton* but1 = new srgui::srButton("button 1", {50,80});
 	srwin->addChild(but1);
 	srgui::srButton* mcl = new srgui::srButton("X", {270,10});
 	mcl->setSize(20, 20);
 	srwin->addChild(mcl);
 	mcl->onClick = []{ exit(0); };
 
-	chk->setArea({ 50, 110, 160, 20 });
+	srgui::srMenuBar* mbar = new srgui::srMenuBar();
+	srwin->addChild(mbar);
+	mbar->setArea({ 0, 0, 300, 20 });
+
+	srgui::srMenu* file = new srgui::srMenu("File", {{ "Open", [=]{ puts("open clicked."); }}, {"Close", [=]{puts("Close clicked");}}});
+	srgui::srMenu* view = new srgui::srMenu("View", {{ "Source", [=]{ puts("src clicked."); }}, {"Data", [=]{puts("data clicked");}}});
+	mbar->add(file);
+	mbar->add(view);
+
+	chk->setArea({ 50, 140, 160, 20 });
 	chk->setText("This is <span color='blue'>checkbox</span>");
 	
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };

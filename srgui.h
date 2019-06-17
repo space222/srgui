@@ -11,7 +11,7 @@ namespace srgui {
 struct srRect
 {
 	int x, y;
-	uint32_t width, height;
+	int width, height;
 };
 
 struct srPoint
@@ -30,7 +30,7 @@ struct srPoint
 
 enum srControlType { SR_CT_WINDOW = 1, SR_CT_BUTTON, SR_CT_CHECKBOX, SR_CT_RADIOBUTTON, SR_CT_LABEL,
 			SR_CT_SPINNER, SR_CT_TEXTFIELD, SR_CT_PROGRESSBAR, SR_CT_GROUPBOX, SR_CT_HSCROLLBAR,
-			SR_CT_VSCROLLBAR
+			SR_CT_VSCROLLBAR, SR_CT_MENUBAR, SR_CT_MENU
 	 };
 
 enum srDrawInfoFlags { SR_DIF_FOCUS = 1, SR_DIF_MOUSE_OVER = 2, 

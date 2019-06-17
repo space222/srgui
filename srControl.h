@@ -62,7 +62,7 @@ public:
 	virtual void getArea(srRect& r) { r = area; return; }
 	virtual void setSize(int width, int height);
 
-	virtual void setVisible(bool b) { visible = b; return; }
+	virtual void setVisible(bool b);
 	virtual bool getVisible() { return visible; }
 
 	virtual void draw(const srDrawInfo&) =0;

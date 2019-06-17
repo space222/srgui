@@ -10,6 +10,13 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srMenu::srMenu(const std::string& name, std::initializer_list<srMenuItem> initlist) 
+		: text(name), items(initlist), dirty(true), surface(nullptr), text_layout(nullptr)
+{
+	resize();
+	return;
+}
+
 void srMenu::draw(const srDrawInfo& info)
 {
 	if( !surface ) resize();
@@ -54,7 +61,7 @@ void srMenu::resize()
 	for(uint32_t i = 0; i < items.size(); ++i)
 	{
 		srMenuItem& mi = items[i];
-		int a = mi.text.size();
+		int a = mi.text.size();		// this should use text-extents, but for now good enough
 		if( a > longest ) 
 		{
 			longest = a;
@@ -68,6 +75,8 @@ void srMenu::resize()
 
 	int width = tr.width + 10;
 	int height = tr.height * items.size();
+	area.width = width;
+	area.height = height;
 
 	if( !surface )
 	{
@@ -84,16 +93,28 @@ void srMenuBar::raiseClickEvent(const srEventInfo& event)
 	int mx = event.mouse.x;
 	if( menu_offsets.size() == 0 || mx > menu_offsets[menu_offsets.size()-1] ) return;
 	
-	for(uint32_t i = 0; i < menu_offsets.size()-1; ++i)
+	for(uint32_t i = 0; i < menu_offsets.size(); ++i)
 	{
-		if( mx < menu_offsets[i+1] )
+		if( mx < menu_offsets[i] )
 		{
+			srRect winr;
 			srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
+			win->getArea(winr);
 			win->overlay = dynamic_cast<srControl*>(menus[i]);
+			menus[i]->area.x = winr.x + ((i == 0) ? 0 : menu_offsets[i-1]);
+			menus[i]->area.y = winr.y + area.y + area.height;
 			break;
 		}
 	}
 
+	return;
+}
+
+void srMenuBar::setArea(const srRect& r)
+{
+	srRect a = r;
+	a.y += srgui_data.UIStyle.windowCaptionHeight;
+	area = a;
 	return;
 }
 
@@ -113,19 +134,19 @@ void srMenuBar::draw(const srDrawInfo& info)
 		srRect txtsize;
 		text_layout->getExtents(txtsize);
 
-		if( (info.flags & SR_DIF_MOUSE_OVER) && info.mouse_rel.x > menu_offs && info.mouse_rel.x < (menu_offs + txtsize.width) )
+		if( (info.flags & SR_DIF_MOUSE_OVER) && info.mouse_rel.x > menu_offs && info.mouse_rel.x < (menu_offs + txtsize.width + 20) )
 		{
 			surf->setColor( srgui_data.UIStyle.itemSelectionColor );
 		} else {
 			surf->setColor( srgui_data.UIStyle.windowBackground );
 		}
 
-		surf->drawRectangle({ menu_offs, origin.y, txtsize.width, area.height });
+		surf->drawRectangle({ menu_offs, origin.y, txtsize.width + 20, area.height });
 		surf->setColor(0);
-		surf->drawTextLayout({ menu_offs, origin.y }, text_layout);
+		surf->drawTextLayout({ menu_offs + 10, origin.y }, text_layout);
 
+		menu_offs += txtsize.width + 20;
 		menu_offsets.push_back(menu_offs);
-		menu_offs += txtsize.width;
 	}
 
 	surf->setColor(0);
