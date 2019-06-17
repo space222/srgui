@@ -85,6 +85,7 @@ void srWindow::draw(const srDrawInfo& info)
 	for(uint32_t i = 0; i < children.size(); ++i)
 	{
 		srControl* c = children[i];
+		if( ! c->visible ) continue;
 
 		srDrawInfo di;
 		di.surface = surface;
@@ -126,7 +127,8 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 	for(uint32_t i = 0; i < tainer->getNumChildren(); ++i)
 	{
 		srControl* c = tainer->getChild(i);
-		
+		if( ! c->visible ) continue;
+
 		srRect area;
 		contr->getArea(area);
 		

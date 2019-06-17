@@ -53,7 +53,7 @@ public:
 class srControl
 {
 public:
-	srControl() : parent(nullptr) { }
+	srControl() : parent(nullptr), visible(true), enabled(true) { }
 	virtual ~srControl() { }
 
 	virtual uint64_t getFlags() { return flags; }
@@ -62,6 +62,9 @@ public:
 	virtual void getArea(srRect& r) { r = area; return; }
 	virtual void setSize(int width, int height);
 
+	virtual void setVisible(bool b) { visible = b; return; }
+	virtual bool getVisible() { return visible; }
+
 	virtual void draw(const srDrawInfo&) =0;
 	virtual srControlType type() =0;
 
@@ -69,9 +72,11 @@ public:
 	virtual srControl* getToplevelParent();
 	virtual void setParent(srControl* c) { parent = c; }
 	
+	friend class srWindow;
 	friend void generateDrawList(std::vector<srRenderTask>& tasks);
 	friend void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
 protected:
+	bool visible, enabled;
 	srRect area;
 	srControl* parent;
 	uint64_t flags;
