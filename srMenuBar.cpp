@@ -39,9 +39,11 @@ void srMenu::draw(const srDrawInfo& info)
 
 	for(uint32_t i = 0; i < items.size(); ++i)
 	{
+		bool selectd = false;
 		if( items[i].text.size() && (info.flags & SR_DIF_MOUSE_OVER) 
 					 && info.mouse_rel.y > (i*20) && info.mouse_rel.y < ((i+1)*20) )
 		{
+			selectd = true;
 			surface->setColor(srgui_data.UIStyle.itemSelectionColor);
 		} else {
 			surface->setColor(srgui_data.UIStyle.windowBackground);
@@ -52,7 +54,7 @@ void srMenu::draw(const srDrawInfo& info)
 		if( items[i].text.size() )
 		{
 			text_layout->setText(items[i].text);
-			surface->setColor(0);
+			surface->setColor( (selectd ? 0xffffff : 0) );
 			surface->drawTextLayout({ 5, (int) i*20 }, text_layout);
 		} else { // separator will be indicated by a text-less item
 			surface->setColor(0x808080);
@@ -138,6 +140,9 @@ void srMenuBar::draw(const srDrawInfo& info)
 	srRect newarea{ origin.x, origin.y, area.width, area.height };
 	int menu_offs = 0;
 
+	surf->setColor(srgui_data.UIStyle.windowBackground);
+	surf->drawRectangle(newarea);
+
 	menu_offsets.clear();
 
 	srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
@@ -151,25 +156,38 @@ void srMenuBar::draw(const srDrawInfo& info)
 
 		if( (info.flags & SR_DIF_MOUSE_OVER) && info.mouse_rel.x > menu_offs && info.mouse_rel.x < (menu_offs + txtsize.width + 20) )
 		{
-			surf->setColor( srgui_data.UIStyle.itemSelectionColor );
 			if( win->overlay )
 			{
 				// not great to do this here, but not feeling
 				// like adding a hover event just yet.
+				srIOverlay* ovl = dynamic_cast<srIOverlay*>(win->overlay);
+				ovl->setDirty();
 				win->overlay = M;
+				M->setDirty();
 				srRect wr;
 				win->getArea(wr);
 				M->area.x = wr.x + menu_offs;
 				M->area.y = wr.y + area.y + area.height;
 			}
+		} 
+
+		if( win->overlay == M )
+		{
+			surf->setColor(0xffffff);
+			surf->drawLine( menu_offs, origin.y+area.height, menu_offs+txtsize.width+20, origin.y+area.height, 1);
+			surf->drawLine( menu_offs+txtsize.width+20, origin.y, menu_offs+txtsize.width+20, origin.y+area.height, 1);
+			surf->setColor(0);
+			surf->drawLine( menu_offs, origin.y, menu_offs+txtsize.width+20, origin.y, 1 );
+			surf->drawLine( menu_offs, origin.y, menu_offs, origin.y+area.height, 1 );
+			surf->drawTextLayout({ menu_offs + 12, origin.y + 2 }, text_layout);
 		} else {
-			surf->setColor( srgui_data.UIStyle.windowBackground );
+			surf->setColor(0);
+			surf->drawTextLayout({ menu_offs + 10, origin.y }, text_layout);
 		}
-
-		surf->drawRectangle({ menu_offs, origin.y, txtsize.width + 20, area.height });
-		surf->setColor(0);
-		surf->drawTextLayout({ menu_offs + 10, origin.y }, text_layout);
-
+		
+		//surf->drawRectangle({ menu_offs, origin.y, txtsize.width + 20, area.height });
+		//surf->setColor(0);
+		
 		menu_offs += txtsize.width + 20;
 		menu_offsets.push_back(menu_offs);
 	}
@@ -179,6 +197,17 @@ void srMenuBar::draw(const srDrawInfo& info)
 
 	return;
 }
+
+srMenuBar::~srMenuBar()
+{
+	delete text_layout;
+	for(srMenu* M : menus)
+	{
+		delete M;
+	}
+	return;
+}
+
 
 } //end of srgui namespace
 

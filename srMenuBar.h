@@ -110,6 +110,8 @@ public:
 		return;
 	}
 
+	virtual ~srMenuBar();
+
 	virtual void raiseClickEvent(const srEventInfo&) override;
 	virtual void draw(const srDrawInfo& info) override;
 	virtual void setArea(const srRect& r) override;

@@ -1,11 +1,9 @@
 SRGUI Todo List
 -----------------
 
-	1. attach horizontal scrollbar to text field in demo
-	2. started menus, might as well get them working
-	3. TextField: move on to getting arrow keys and selection(!) working
-	4. full text area?
-	
+	1. make menus look a bit nicer
+	2. textfield needs work
+	3. spinner and decimals?
 
 Notes
 -------

@@ -39,7 +39,7 @@ void setDefaultStyle()
 	laf.buttonBackground = 0xc0c0be;
 	laf.buttonRounding = 0;
 	laf.buttonOutline = 0x3030A0;
-	laf.itemSelectionColor = 0x7070FF;
+	laf.itemSelectionColor = 0x2a448a; //0x7070FF;
 	laf.textBackground = 0xF0F0F0;
 	return;
 }
@@ -48,6 +48,16 @@ bool point_in_rect(const srRect& r, const srPoint& p)
 {
 	return (p.x >= r.x && p.x < (r.x+r.width) &&
 		p.y >= r.y && p.y < (r.y+r.height) );
+}
+
+void remove_overlay(srWindow* win)
+{
+	if( win->overlay )
+	{
+		win->overlay = nullptr;
+		win->setDirty();
+	}
+	return;
 }
 
 srPoint get_control_relative_point(srWindow* win, srControl* c, const srPoint& p)
@@ -137,7 +147,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		{
 			if( srgui_data.windows[0] )
 			{
-				srgui_data.windows[0]->overlay = nullptr;
+				remove_overlay(srgui_data.windows[0]);
 			}
 			return;
 		}
@@ -157,7 +167,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srgui_data.windows[0]->setChildFocus(nullptr);
 
 			// old window gets overlay controls (just menus for now) closed
-			srgui_data.windows[0]->overlay = nullptr;
+			remove_overlay(srgui_data.windows[0]);
 			
 			// find and pull up the new window
 			for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
@@ -176,7 +186,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		     // if we're not clicking a control, see if its time to
 		     // drag by the caption
 			srgui_data.mouse_l_down.window = srgui_data.windows[0];
-			srgui_data.windows[0]->overlay = nullptr; // window drag closes menus
+			remove_overlay(srgui_data.windows[0]); // window drag closes menus
 			srRect r, c;
 			srgui_data.windows[0]->getArea(r);
 			c = r;
@@ -221,7 +231,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 	
 		if( srgui_data.windows[0]->overlay && srgui_data.mouse_l_down.child != srgui_data.windows[0]->overlay )
 		{
-			srgui_data.windows[0]->overlay = nullptr;
+			remove_overlay(srgui_data.windows[0]);
 		} 
 
 		if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
@@ -254,7 +264,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 					{
 						srRect &r = srgui_data.windows[0]->overlay->area;
 						c->raiseClickEvent({{x - r.x, y - r.y}, 0,0});
-						srgui_data.windows[0]->overlay = nullptr;
+						remove_overlay(srgui_data.windows[0]);
 						event = SR_EVENT_MOUSE_MOVE;
 						data0 = x;
 						data1 = y;
