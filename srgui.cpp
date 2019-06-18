@@ -75,7 +75,6 @@ srPoint get_control_relative_point(srWindow* win, srControl* c, const srPoint& p
 
 	res.x -= c_area.x;
 	res.y -= c_area.y;
-
 	return res;
 }
 
@@ -134,7 +133,14 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		int y = data2;
 
 		// if we're not even over a window, we can ditch early
-		if( ! srgui_data.mouse_over ) return;
+		if( ! srgui_data.mouse_over ) 
+		{
+			if( srgui_data.windows[0] )
+			{
+				srgui_data.windows[0]->overlay = nullptr;
+			}
+			return;
+		}
 
 		// if we were over a window that isn't already top
 		// find it and bring it up
@@ -170,6 +176,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		     // if we're not clicking a control, see if its time to
 		     // drag by the caption
 			srgui_data.mouse_l_down.window = srgui_data.windows[0];
+			srgui_data.windows[0]->overlay = nullptr; // window drag closes menus
 			srRect r, c;
 			srgui_data.windows[0]->getArea(r);
 			c = r;
@@ -211,15 +218,85 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			if( ev ) ev->raiseLoseFocusEvent({});
 			srgui_data.windows[0]->setChildFocus(nullptr);
 		}
+	
+		if( srgui_data.windows[0]->overlay && srgui_data.mouse_l_down.child != srgui_data.windows[0]->overlay )
+		{
+			srgui_data.windows[0]->overlay = nullptr;
+		} 
 
 		if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
 				&& (srgui_data.mouse_l_down.child->getFlags() & SR_CF_REPAINT_ON_LBUTTON_STATE) )
 		{
-			srgui_data.mouse_over.window->setDirty();
+			if( srgui_data.mouse_l_down.child != srgui_data.windows[0]->overlay )
+				srgui_data.mouse_over.window->setDirty();
 		}
 
 		return;
 	}
+
+	if( event == SR_EVENT_MOUSE_UP )
+	{
+		int button = data0;
+		int x = data1;
+		int y = data2;
+		srgui_data.caption_move = false;
+
+		switch( button )
+		{
+		case 1:
+			if( srgui_data.mouse_l_down.child && srgui_data.mouse_l_down == srgui_data.mouse_over )
+			{
+				srIEvent* c = dynamic_cast<srIEvent*>(srgui_data.mouse_l_down.child);
+				if( c )
+				{
+					srWindow* win = srgui_data.mouse_l_down.window;
+					if( srgui_data.mouse_l_down.child == srgui_data.windows[0]->overlay )
+					{
+						srRect &r = srgui_data.windows[0]->overlay->area;
+						c->raiseClickEvent({{x - r.x, y - r.y}, 0,0});
+						srgui_data.windows[0]->overlay = nullptr;
+						event = SR_EVENT_MOUSE_MOVE;
+						data0 = x;
+						data1 = y;
+						data2 = data3 = 0;
+						// need to grab the control under the now-closed overlay
+						// otherwise, the other two options are not taking input
+						// until the mouse moves again, or crashing when all this 
+						// messes up the input state. easy fix to get proper behavior
+						// but not pretty to fall through to another if.
+						// could just recurse, but hey already here.
+					} else {
+						c->raiseClickEvent({get_control_relative_point(win, 
+								srgui_data.mouse_l_down.child, {x,y}), 0,0});
+					}
+				}
+				else printf("It wasn't clickable! %i\n", srgui_data.mouse_l_down.child->type());
+			}
+			if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
+				&& (srgui_data.mouse_l_down.child->getFlags() & (SR_CF_REPAINT_ON_LEFT_CLICK|SR_CF_REPAINT_ON_LBUTTON_STATE)) )
+			{
+				srgui_data.mouse_l_down.window->setDirty();
+			}
+			break;
+		case 2:
+			srgui_data.mouse_m_down.clear();
+			break;
+		case 3:
+			srgui_data.mouse_r_down.clear();
+			break;
+		}
+
+		if( srControl* c = srgui_data.mouse_l_down.child; c )
+		{
+			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
+			if( ev ) ev->raiseMouseUpEvent({get_control_relative_point(srgui_data.mouse_l_down.window, c, {x,y}), 0,0,1});
+		}
+
+		srgui_data.mouse_l_down.clear();
+
+		//might want to fall through here to EVENT_MOUSE_MOVE which MUST NOT be
+		//relocated above this IF.
+	} //end of mouse up
 
 	if( event == SR_EVENT_MOUSE_MOVE )
 	{
@@ -255,6 +332,11 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			// because of no longer hovering.
 			srgui_data.mouse_over.window = srgui_data.windows[0];
 			srgui_data.mouse_over.child = srgui_data.windows[0]->overlay;
+			if( srgui_data.windows[0]->overlay->flags & SR_CF_REPAINT_ON_HOVER )
+			{
+				srIOverlay* ov = dynamic_cast<srIOverlay*>(old.child);
+				if( ov ) ov->setDirty();
+			}
 		} else {
 
 			srWindow* W = nullptr;
@@ -310,48 +392,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		}
 	} //end of mouse move
 
-	if( event == SR_EVENT_MOUSE_UP )
-	{
-		int button = data0;
-		int x = data1;
-		int y = data2;
-		srgui_data.caption_move = false;
 
-		switch( button )
-		{
-		case 1:
-			if( srgui_data.mouse_l_down.child && srgui_data.mouse_l_down == srgui_data.mouse_over )
-			{
-				srIEvent* c = dynamic_cast<srIEvent*>(srgui_data.mouse_l_down.child);
-				if( c )
-				{
-					srWindow* win = srgui_data.mouse_l_down.window;
-					c->raiseClickEvent({get_control_relative_point(win, srgui_data.mouse_l_down.child, {x,y}), 0,0});
-				}
-				else printf("It wasn't clickable! %i\n", srgui_data.mouse_l_down.child->type());
-			}
-			if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
-				&& (srgui_data.mouse_l_down.child->getFlags() & (SR_CF_REPAINT_ON_LEFT_CLICK|SR_CF_REPAINT_ON_LBUTTON_STATE)) )
-			{
-				srgui_data.mouse_l_down.window->setDirty();
-			}
-			break;
-		case 2:
-			srgui_data.mouse_m_down.clear();
-			break;
-		case 3:
-			srgui_data.mouse_r_down.clear();
-			break;
-		}
-
-		if( srControl* c = srgui_data.mouse_l_down.child;  c )
-		{
-			srIEvent* ev = dynamic_cast<srIEvent*>(c);	
-			if( ev ) ev->raiseMouseUpEvent({get_control_relative_point(srgui_data.mouse_l_down.window, c, {x,y}), 0,0,1});
-		}
-
-		srgui_data.mouse_l_down.clear();
-	} //end of mouse up
 
 	return;
 }
@@ -383,7 +424,9 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 
 		if( ovly->getDirty() )
 		{
-			win->overlay->draw(srDrawInfo{ovly->getSurface(), (srDrawInfoFlags) 0, 
+			uint32_t f = 0;
+			if( point_in_rect( oca, srgui_data.mouse_pos ) ) f |= SR_DIF_MOUSE_OVER;
+			win->overlay->draw(srDrawInfo{ovly->getSurface(), (srDrawInfoFlags) f, 
 					{srgui_data.mouse_pos.x-oca.x, srgui_data.mouse_pos.y-oca.y}, {0,0}});
 			ovly->clearDirty();
 		}

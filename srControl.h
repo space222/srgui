@@ -27,8 +27,7 @@ public:
 
 struct srEventInfo
 {
-	/* mouse is absolute everywhere but raiseMouseMoveEvent, which sends relative movement */
-	srPoint mouse;
+	srPoint mouse;    // relative motion in mouse move event only. control-origin elsewhere
 	uint32_t mods, key;
 	int mouse_button;
 };

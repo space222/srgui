@@ -13,7 +13,20 @@ extern srgui::system_data srgui_data;
 srMenu::srMenu(const std::string& name, std::initializer_list<srMenuItem> initlist) 
 		: text(name), items(initlist), dirty(true), surface(nullptr), text_layout(nullptr)
 {
+	flags = SR_CF_REPAINT_ON_HOVER | SR_CF_REPAINT_ON_LBUTTON_STATE;
 	resize();
+	return;
+}
+
+void srMenu::raiseClickEvent(const srEventInfo& event)
+{
+	int i = event.mouse.y / 20;
+	if( items[i].text.size() && items[i].onClick )
+	{
+		items[i].onClick();
+		dirty = true;
+		//srgui_data.windows[0]->overlay = nullptr;
+	}
 	return;
 }
 
@@ -127,6 +140,8 @@ void srMenuBar::draw(const srDrawInfo& info)
 
 	menu_offsets.clear();
 
+	srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
+
 	for(srMenu* M : menus)
 	{
 		const std::string& txt = M->getText();
@@ -137,6 +152,16 @@ void srMenuBar::draw(const srDrawInfo& info)
 		if( (info.flags & SR_DIF_MOUSE_OVER) && info.mouse_rel.x > menu_offs && info.mouse_rel.x < (menu_offs + txtsize.width + 20) )
 		{
 			surf->setColor( srgui_data.UIStyle.itemSelectionColor );
+			if( win->overlay )
+			{
+				// not great to do this here, but not feeling
+				// like adding a hover event just yet.
+				win->overlay = M;
+				srRect wr;
+				win->getArea(wr);
+				M->area.x = wr.x + menu_offs;
+				M->area.y = wr.y + area.y + area.height;
+			}
 		} else {
 			surf->setColor( srgui_data.UIStyle.windowBackground );
 		}

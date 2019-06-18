@@ -23,7 +23,6 @@ class srMenu : public srControl, public srIOverlay, public srIEvent
 public:
 	srMenu(const std::string& name, std::initializer_list<srMenuItem> initlist);
 
-	srMenu() : text(), dirty(true), surface(nullptr), text_layout(nullptr) { }
 	virtual ~srMenu() { delete surface; delete text_layout; }
 
 	virtual srDrawSurface* getSurface() override { return surface; }
@@ -85,9 +84,13 @@ public:
 	virtual void draw(const srDrawInfo& info) override;
 	virtual srControlType type() override { return SR_CT_MENU; }
 
+	virtual void raiseClickEvent(const srEventInfo&) override;
+
 	friend void generateDrawList(std::vector<srRenderTask>& tasks);
 	friend class srMenuBar;
 protected:
+	srMenu() : text(), dirty(true), surface(nullptr), text_layout(nullptr) { }
+
 	void resize();
 
 	bool dirty;

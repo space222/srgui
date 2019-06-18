@@ -62,7 +62,8 @@ int main(int argc, char** args)
 	mbar->setArea({ 0, 0, 300, 20 });
 
 	srgui::srMenu* file = new srgui::srMenu("File", {{ "Open", [=]{ puts("open clicked."); }}, {"Close", [=]{puts("Close clicked");}}});
-	srgui::srMenu* view = new srgui::srMenu("View", {{ "Source", [=]{ puts("src clicked."); }}, {"Data", [=]{puts("data clicked");}}});
+	srgui::srMenu* view = new srgui::srMenu("View", {
+			{ "Source", [=]{ puts("src clicked."); }}, { "", [=]{} }, {"Data", [=]{puts("data clicked");}}});
 	mbar->add(file);
 	mbar->add(view);
 
