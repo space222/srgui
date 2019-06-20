@@ -1,9 +1,10 @@
 SRGUI Todo List
 -----------------
 
-	1. make menus look a bit nicer
-	2. textfield needs work
-	3. spinner and decimals?
+	1. textfield needs work
+	2. spinner and decimals?
+	3. vertical scroll?
+	4. text area?
 
 Notes
 -------

@@ -8,10 +8,13 @@
 
 namespace srgui {
 
+class srMenu;
+
 struct srMenuItem
 {
 	std::string text;
 	std::function<void()> onClick;
+	srMenu* submenu;
 
 	srMenuItem(const std::string& t, const std::function<void()>& fn) : text(t), onClick(fn) {}
 };
@@ -80,6 +83,8 @@ public:
 		resize();
 		return;
 	}
+
+	srMenu* submenu;
 
 	virtual void draw(const srDrawInfo& info) override;
 	virtual srControlType type() override { return SR_CT_MENU; }

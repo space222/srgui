@@ -54,6 +54,7 @@ void remove_overlay(srWindow* win)
 {
 	if( win->overlay )
 	{
+		//todo: sub-overlay
 		win->overlay = nullptr;
 		win->setDirty();
 	}
@@ -390,7 +391,13 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 
 		if( old && old.child && (old.child->getFlags() & SR_CF_REPAINT_ON_HOVER) )
 		{
-			old.window->setDirty();
+			if( old.child == old.window->overlay )
+			{
+				srIOverlay* iov = dynamic_cast<srIOverlay*>(old.child);
+				iov->setDirty();
+			} else {
+				old.window->setDirty();
+			}
 		}
 
 		if( srControl* c = srgui_data.mouse_l_down.child;  c )

@@ -10,9 +10,12 @@ namespace srgui {
 class srButton : public srControl, public srIEvent
 {
 public:
-	srButton() : text_layout(nullptr) { flags = /* SR_CF_REPAINT_ON_HOVER | */ SR_CF_REPAINT_ON_LBUTTON_STATE; }
+	srButton() : text_layout(nullptr) { flags = SR_CF_REPAINT_ON_LBUTTON_STATE; }
 
 	srButton(const std::string& s, const srPoint& p, int label_margin = -1);
+	srButton(const std::string& s, const srRect& r) : srButton() { area = r; setText(s); return; }
+	srButton(const std::string& s, const srRect& r, const std::function<void()>& fn) 
+		: srButton() { area = r; setText(s); onClick = fn; return; }
 
 	virtual ~srButton() { delete text_layout; }
 

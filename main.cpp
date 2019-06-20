@@ -52,11 +52,9 @@ int main(int argc, char** args)
 	srwin->addChild(chk);
 	srgui::srButton* but1 = new srgui::srButton("button 1", {50,80});
 	srwin->addChild(but1);
-	srgui::srButton* mcl = new srgui::srButton("X", {270,10});
-	mcl->setSize(20, 20);
+	srgui::srButton* mcl = new srgui::srButton("X", {270,10,20,20}, []{ puts("exiting..."); exit(0); });
 	srwin->addChild(mcl);
-	mcl->onClick = []{ exit(0); };
-
+	
 	srgui::srMenuBar* mbar = new srgui::srMenuBar();
 	srwin->addChild(mbar);
 	mbar->setArea({ 0, 0, 300, 20 });

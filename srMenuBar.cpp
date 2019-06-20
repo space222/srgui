@@ -41,7 +41,7 @@ void srMenu::draw(const srDrawInfo& info)
 	{
 		bool selectd = false;
 		if( items[i].text.size() && (info.flags & SR_DIF_MOUSE_OVER) 
-					 && info.mouse_rel.y > (i*20) && info.mouse_rel.y < ((i+1)*20) )
+					 && info.mouse_rel.y > 5+(i*20) && info.mouse_rel.y < 5+((i+1)*20) )
 		{
 			selectd = true;
 			surface->setColor(srgui_data.UIStyle.itemSelectionColor);
@@ -49,16 +49,24 @@ void srMenu::draw(const srDrawInfo& info)
 			surface->setColor(srgui_data.UIStyle.windowBackground);
 		}
 
-		surface->drawRectangle({ 0, (int) i*20, area.width, 20 });
+		surface->drawRectangle({ 2, 5 + (int) i*20, area.width-2, 20 });
+		surface->setColor(0xffffff);
+		surface->drawLine( 0, 0, area.width, 0, 1 );
+		surface->drawLine( 0, 0, 0, area.height, 1 );
+		surface->setColor(0);
+		surface->drawLine( area.width-1, 0, area.width-1, area.height, 1 );
+		surface->drawLine( 0, area.height, area.width-1, area.height, 1);
 
 		if( items[i].text.size() )
 		{
 			text_layout->setText(items[i].text);
 			surface->setColor( (selectd ? 0xffffff : 0) );
-			surface->drawTextLayout({ 5, (int) i*20 }, text_layout);
+			surface->drawTextLayout({ 16, 5 + (int) i*20 }, text_layout);
 		} else { // separator will be indicated by a text-less item
-			surface->setColor(0x808080);
-			surface->drawLine( 5, (int) (i*20 + 10), 5 + (area.width - 10), (int) (i*20+10), 1);
+			surface->setColor(0);
+			surface->drawLine( 5, 5 + (int) (i*20 + 10), 5 + (area.width - 10), 5 + (int) (i*20+10), 1);
+			surface->setColor(0xffffff);
+			surface->drawLine( 5, 6 + (int) (i*20 + 10), 5 + (area.width - 10), 6 + (int) (i*20+10), 1);
 		}
 	}
 
@@ -88,8 +96,8 @@ void srMenu::resize()
 	srRect tr;
 	text_layout->getExtents(tr);
 
-	int width = tr.width + 10;
-	int height = tr.height * items.size();
+	int width = tr.width + 32;
+	int height = tr.height * items.size() +  10;
 	area.width = width;
 	area.height = height;
 

@@ -12,6 +12,8 @@ struct srRect
 {
 	int x, y;
 	int width, height;
+	srRect() : x(0), y(0), width(0), height(0) {}
+	srRect(int _x, int _y, int w, int h) : x(_x), y(_y), width(w), height(h) {}
 };
 
 struct srPoint
@@ -25,6 +27,8 @@ struct srPoint
 	{
 		return { x - p.x, y - p.y };
 	}
+	srPoint() : x(0), y(0) { }
+	srPoint(int _x, int _y) : x(_x), y(_y) {}
 };
 
 
