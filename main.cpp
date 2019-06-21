@@ -48,9 +48,9 @@ int main(int argc, char** args)
 	srgui::setTextFocusCallback(sdl_text_focus_callback);
 
 	unique_ptr<srgui::srWindow> srwin(srgui::CreateWindow({100,150,300,300}, nullptr, "Window <span color='red'>Test</span> 1"));
-	srgui::srCheckbox* chk = new srgui::srCheckbox();
+	srgui::srCheckbox* chk = new srgui::srCheckbox("This is a <span color='blue'>checkbox</span>", {50, 200});
 	srwin->addChild(chk);
-	srgui::srButton* but1 = new srgui::srButton("button 1", {50,80});
+	srgui::srButton* but1 = new srgui::srButton("button 1", {50,140});
 	srwin->addChild(but1);
 	srgui::srButton* mcl = new srgui::srButton("X", {270,10,20,20}, []{ puts("exiting..."); exit(0); });
 	srwin->addChild(mcl);
@@ -65,10 +65,8 @@ int main(int argc, char** args)
 	mbar->add(file);
 	mbar->add(view);
 
-	chk->setArea({ 50, 140, 160, 20 });
-	chk->setText("This is <span color='blue'>checkbox</span>");
-	
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
+
 	unique_ptr<srgui::srWindow> win2(srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2"));
 
 	srgui::srRadioButton* rb1 = new srgui::srRadioButton();

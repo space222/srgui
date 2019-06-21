@@ -10,6 +10,30 @@ namespace srgui {
 
 extern srgui::system_data srgui_data;
 
+srCheckbox::srCheckbox(const std::string& txt, const srPoint& p) : srCheckbox()
+{
+	setText(txt);
+
+	srRect tr;
+	text_layout->getExtents(tr);
+
+	area.x = p.x;
+	area.y = p.y;
+
+	area.width = tr.width + 20;
+	area.height = tr.height > 15 ? tr.height : 20;
+
+	return;
+}
+
+srCheckbox::srCheckbox(const std::string& txt, const srRect& r) : srCheckbox()
+{
+	setText(txt);
+	area = r;
+	area.width += 15;
+	return;
+}
+
 void srCheckbox::setText(const std::string& s)
 {
 	text = s;
