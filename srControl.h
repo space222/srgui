@@ -52,7 +52,7 @@ public:
 class srControl
 {
 public:
-	srControl() : parent(nullptr), visible(true), enabled(true) { }
+	srControl() : parent(nullptr), visible(true), enabled(true), flags(0) { }
 	virtual ~srControl() { }
 
 	virtual uint64_t getFlags() { return flags; }

@@ -80,6 +80,18 @@ void srRadioButton::setText(const std::string& s)
 	return;
 }
 
+srRadioButton::srRadioButton(const std::string& str, const srPoint& p) : srRadioButton()
+{
+	setText(str);
+
+	srRect r;
+	text_layout->getExtents(r);
+
+	area = { p.x, p.y, r.width + 20, r.height };
+
+	return;
+}
+
 void srRadioButton::draw(const srDrawInfo& info)
 {
 	srDrawSurface* surf = info.surface;
@@ -91,8 +103,8 @@ void srRadioButton::draw(const srDrawInfo& info)
 
 	//surf->outlineRectangle(newarea);
 
-	int h = area.height/2;
-
+	int h = 10; // area.height/2;
+	
 	surf->setColor(srgui_data.UIStyle.textBackground);
 	surf->drawCircle({newarea.x+h, newarea.y+h}, h - 3);
 	surf->setColor(0);

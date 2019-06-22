@@ -69,11 +69,12 @@ int main(int argc, char** args)
 
 	unique_ptr<srgui::srWindow> win2(srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2"));
 
-	srgui::srRadioButton* rb1 = new srgui::srRadioButton();
-	srgui::srRadioButton* rb2 = new srgui::srRadioButton();
-	srgui::srRadioButton* rb3 = new srgui::srRadioButton();
+	srgui::srRadioButton* rb1 = new srgui::srRadioButton("radio b1!", { 5, 20 });
+	srgui::srRadioButton* rb2 = new srgui::srRadioButton("radio b2!", { 5, 40 });
+	srgui::srRadioButton* rb3 = new srgui::srRadioButton("radio b3!", { 5, 60 });
 	srgui::srGroupBox* grpb = new srgui::srGroupBox("Group box", {40, 70, 150, 150});
-	
+	unique_ptr<srgui::srRadioGroup> rg(new srgui::srRadioGroup{ rb1, rb2, rb3  });
+
 	srgui::srLabel* lbl = new srgui::srLabel("Labels! <b>Yay!</b>", {50, 42} );
 	win2->addChild(lbl);
 	win2->addChild(grpb);
@@ -82,16 +83,6 @@ int main(int argc, char** args)
 	grpb->addChild(rb3);
 	srgui::srSpinner* spin2 = new srgui::srSpinner({ 5, 80, 50, 50 });
 	grpb->addChild(spin2);
-
-	//lbl->setArea({ 50, 42, 100, 20});
-	//lbl->setText();
-	rb1->setArea({ 5, 20, 100, 20});
-	rb1->setText("radio b1!");
-	rb2->setArea({ 5, 40, 100, 20});
-	rb2->setText("radio b2!");
-	rb3->setArea({ 5, 60, 100, 20});
-	rb3->setText("radio b3!");
-	unique_ptr<srgui::srRadioGroup> rg(new srgui::srRadioGroup{ rb1, rb2, rb3  });
 
 	unique_ptr<srgui::srWindow> win3(srgui::CreateWindow({ 100,500,350,350 }, nullptr, "Banana 3"));
 	srgui::srSpinner* spin = new srgui::srSpinner({ 20, 50, 50, 50 });

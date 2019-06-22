@@ -14,6 +14,7 @@ class srRadioButton : public srControl, public srIEvent
 {
 public:
 	srRadioButton() : text_layout(nullptr), isChecked(false), r_group(nullptr) { flags = SR_CF_REPAINT_ON_LEFT_CLICK; }
+	srRadioButton(const std::string&, const srPoint&);
 
 	virtual ~srRadioButton();
 
