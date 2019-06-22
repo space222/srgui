@@ -261,11 +261,12 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 				if( c )
 				{
 					srWindow* win = srgui_data.mouse_l_down.window;
-					if( srgui_data.mouse_l_down.child == srgui_data.windows[0]->overlay )
+					if( win->overlay && srgui_data.mouse_l_down.child == srgui_data.mouse_l_down.window->overlay )
 					{
 						srRect &r = srgui_data.windows[0]->overlay->area;
 						c->raiseClickEvent({{x - r.x, y - r.y}, 0,0});
 						remove_overlay(srgui_data.windows[0]);
+						//srgui_data.mouse_over.clear();    //maybe?
 						event = SR_EVENT_MOUSE_MOVE;
 						data0 = x;
 						data1 = y;
@@ -304,7 +305,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		}
 
 		srgui_data.mouse_l_down.clear();
-
+		
 		//might want to fall through here to EVENT_MOUSE_MOVE which MUST NOT be
 		//relocated above this IF.
 	} //end of mouse up

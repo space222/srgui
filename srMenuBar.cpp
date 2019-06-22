@@ -20,7 +20,11 @@ srMenu::srMenu(const std::string& name, std::initializer_list<srMenuItem> initli
 
 void srMenu::raiseClickEvent(const srEventInfo& event)
 {
-	int i = event.mouse.y / 20;
+	int i = (event.mouse.y - 5) / 20;
+	if( event.mouse.y < 5 || i >= items.size() )
+	{
+		return;
+	}
 	if( items[i].text.size() && items[i].onClick )
 	{
 		items[i].onClick();
