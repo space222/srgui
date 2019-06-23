@@ -53,14 +53,8 @@ void srMenu::draw(const srDrawInfo& info)
 			surface->setColor(srgui_data.UIStyle.windowBackground);
 		}
 
-		surface->drawRectangle({ 2, 5 + (int) i*20, area.width-2, 20 });
-		surface->setColor(0xffffff);
-		surface->drawLine( 0, 0, area.width, 0, 1 );
-		surface->drawLine( 0, 0, 0, area.height, 1 );
-		surface->setColor(0);
-		surface->drawLine( area.width-1, 0, area.width-1, area.height, 1 );
-		surface->drawLine( 0, area.height, area.width-1, area.height, 1);
-
+		surface->drawRectangle({ 2, 5 + (int) i*20, area.width-4, 20 });
+	
 		if( items[i].text.size() )
 		{
 			text_layout->setText(items[i].text);
@@ -74,7 +68,12 @@ void srMenu::draw(const srDrawInfo& info)
 		}
 	}
 
-	//todo: like anything else, make it look nicer once functionality... functions.
+	surface->setColor(0xffffff);
+	surface->drawLine( 0, 0, area.width, 0, 1 );
+	surface->drawLine( 0, 0, 0, area.height, 1 );
+	surface->setColor(0);
+	surface->drawLine( area.width-1, 0, area.width-1, area.height, 1 );
+	surface->drawLine( 0, area.height, area.width-1, area.height, 1);
 
 	return;
 }
