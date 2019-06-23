@@ -1,7 +1,7 @@
 # SRGUI
 ## Intro
 
-SRGUI (pronounced Sir Gooey) stands for Simple Retained-mode Graphical User Interface (as in the title). Is a simple C++ GUI toolkit for creating overlay windows for simple utilities or debug interfaces. If a wider selection of fancier widgets is desired, use [Dear ImGui](https://github.com/ocornut/imgui) (it's super intuitive and works great) instead. SRGUI differs from ImGui in being retained mode and offering less attractive and fewer widgets. In fact, the author of SRGUI is a big fan of the late 20th century Windows look (win98/2000) and uses that as the inspiration for the look and feel of SRGUI (it is not duplicated exactly). SRGUI supports a certain amount of style/"look and feel" configuration. Any assistance is appreciated. New controls should (please) do their best to interpret the style settings.
+SRGUI (pronounced Sir Gooey) stands for Simple Retained-mode Graphical User Interface. Is a simple C++ GUI toolkit for creating overlay windows for simple utilities or debug interfaces. If a wider selection of fancier widgets is desired, use [Dear ImGui](https://github.com/ocornut/imgui) (it's super intuitive and works great) instead. SRGUI differs from ImGui in being retained mode and offering less attractive and fewer widgets. I'm a big fan of the late 20th century Windows look (win98/2000) and use that as the inspiration for the look and feel of SRGUI (it is not duplicated exactly). SRGUI supports a certain amount of style/"look and feel" configuration. Any assistance is appreciated. New controls should (please) do their best to interpret the style settings.
 
 Demo Screenshot:
 
@@ -22,6 +22,6 @@ SRGUI needs to be notified of events so that the UI can react to the keyboard an
 ## Building the demo
 
 A Makefile is provided. However, the following one-liner will build the demo:
-g++ -std=c++17 *.cpp \`pkg-config --cflags --libs sdl2 cairo pangocairo\`
+g++ -O2 -std=c++17 *.cpp \`pkg-config --cflags --libs sdl2 cairo pangocairo\`
 
 
