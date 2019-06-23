@@ -37,18 +37,10 @@ public:
 	std::function<void()> onScroll;
 
 	virtual int getValue() { return value; }
-	virtual void setScrollInfo(int max, int page_sz)
-	{
-		if( max < 0 || page_sz < 0 ) return;
-		this->max = max;
-		this->page_size = page_sz;
-		this->value = 0;
-		srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());	
-		if( win ) win->setDirty();
-		return;
-	}
+	virtual void setScrollInfo(int max, int page_sz);
 
 protected:
+	void calc_thumb_pos();
 	srButton *left, *right;
 	int max, page_size;
 	int value;

@@ -33,30 +33,33 @@ bool srHScrollBar::point_in_child(uint32_t index, const srPoint& p)
 
 
 srHScrollBar::srHScrollBar(const srRect& a) 
-		: value(50), page_size(10), max(200), thumb_loc(0), thumb_size(5), in_thumb_move(false)
+		: value(50), page_size(10), max(200), thumb_loc(20), thumb_size(5), in_thumb_move(false)
 {
 	area = a;
 	flags = SR_CF_REPAINT_ON_LBUTTON_STATE | SR_CF_REPAINT_ON_MOUSE_MOVE;
 	left = new srButton("\u2BC7", { 0, 0 });
 	left->setSize(20, area.height);
-	right = new srButton("\u2BC8", { (int)area.width - 20, 0 });
+	right = new srButton("\u2BC8", { area.width - 20, 0 });
 	right->setSize(20, area.height);
-	left->onClick = [&]{ value -= page_size; 
+	left->onClick = [&]{ value -= (int)(max*0.02f); 
 		if( value <= 0 )  
 		{
 			value = 0;
 		}
+		calc_thumb_pos();
 		return; 
 	};
 
-	right->onClick = [&]{ value += page_size;
-		if( value > max )
+	right->onClick = [&]{ value += (int)(max*0.02f);
+		if( value > max-page_size )
 		{
-			value = max;
+			value = max-page_size;
 		}
+		calc_thumb_pos();
 		return; 
 	};
 
+	setScrollInfo(max, page_size);
 	return;
 }
 
@@ -64,10 +67,15 @@ void srHScrollBar::raiseMouseMoveEvent(const srEventInfo& ev)
 {
 	if( ! in_thumb_move ) return;
 
-	value += ev.mouse.x + (ev.mouse.x/2);  // using X straight lags, but more is a bit too fast
-				// sticking with faster because lagging is more irritating to use
-	if( value > max ) value = max;
-	else if( value < 0 ) value = 0;
+	thumb_loc += ev.mouse.x;
+	if( thumb_loc < 20 ) thumb_loc = 20;
+	else if( thumb_loc > area.width-22-thumb_size ) thumb_loc = area.width-22-thumb_size;
+	float pos_pcent = (thumb_loc-20) / (float)(area.width-42-thumb_size);
+	value = (int) ( pos_pcent * (max-page_size) );
+	//std::printf("mx = %i, tl = %i, v = %i\n", ev.mouse.x, thumb_loc, value);
+	
+	srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
+	if( win ) win->setDirty();
 
 	if( onScroll ) onScroll();
 
@@ -90,10 +98,12 @@ void srHScrollBar::raiseMouseUpEvent(const srEventInfo& ev)
 			value -= page_size;
 			if( value < 0 ) value = 0;
 			if( onScroll ) onScroll();
+			calc_thumb_pos();
 		} else if( ev.mouse.x > (thumb_loc + thumb_size) ) {
 			value += page_size;
-			if( value > max ) value = max;
+			if( value > max-page_size ) value = max-page_size;
 			if( onScroll ) onScroll();
+			calc_thumb_pos();
 		}
 	}
 
@@ -116,23 +126,40 @@ void srHScrollBar::draw(const srDrawInfo& info)
 	surf->setColor(0x808080);
 	surf->drawRectangle(newarea);
 
-	int ts = (page_size / (float)max) * (newarea.width-40);
-	if( ts < 5 ) ts = 5;
-
 	surf->setColor(srgui_data.UIStyle.windowBackground);
 
-	int xval = 21 + (int)((value / (float)max)*(area.width-42-ts)) + newarea.x;
+	int xval = thumb_loc + newarea.x;
 
-	surf->drawRectangle({ xval, newarea.y, ts, area.height });
+	surf->drawRectangle({ xval, newarea.y, thumb_size, area.height });
 	surf->setColor(0xFFFFFF);
-	surf->drawLine( xval+1, newarea.y+1, xval+ts, newarea.y+1, 1 );
+	surf->drawLine( xval+1, newarea.y+1, xval+thumb_size, newarea.y+1, 1 );
 	surf->drawLine( xval+1, newarea.y+1, xval+1,  newarea.y+area.height-1, 1 );
 	surf->setColor(0);
-	surf->drawLine( xval, newarea.y+newarea.height, xval+ts, newarea.y+newarea.height, 1);
-	surf->drawLine( xval+ts, newarea.y, xval+ts, newarea.y+newarea.height, 1);
+	surf->drawLine( xval, newarea.y+newarea.height, xval+thumb_size, newarea.y+newarea.height, 1);
+	surf->drawLine( xval+thumb_size, newarea.y, xval+thumb_size, newarea.y+newarea.height, 1);
 
-	thumb_loc = xval - newarea.x;
-	thumb_size = ts;
+	return;
+}
+
+void srHScrollBar::setScrollInfo(int Max, int Page_sz)
+{
+	if( Max < 0 || Page_sz < 0 ) return;
+	max = Max;
+	page_size = Page_sz;
+	value = 0;
+
+	thumb_size = (page_size / (float)max) * (area.width-40);
+	if( thumb_size < 5 ) thumb_size = 5;
+
+	srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());	
+	if( win ) win->setDirty();
+	return;
+}
+
+void srHScrollBar::calc_thumb_pos()
+{
+	thumb_loc = 20 + (int) ( ((value)/(float)(max-page_size)) * (area.width-42-thumb_size) );
+	//std::printf("value = %i\n", value);
 	return;
 }
 
