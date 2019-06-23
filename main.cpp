@@ -19,6 +19,7 @@
 #include "srGroupBox.h"
 #include "srMenuBar.h"
 #include "srHScrollBar.h"
+#include "srVScrollBar.h"
 
 bool MainRunning = true;
 
@@ -68,6 +69,10 @@ int main(int argc, char** args)
 	but1->onClick = [=]{ if( chk->checked() ) std::puts("It's checked."); else std::puts("It is not."); };
 
 	unique_ptr<srgui::srWindow> win2(srgui::CreateWindow({ 400, 450, 400, 250 }, nullptr, "Window Test 2"));
+	srgui::srVScrollBar* vcr = new srgui::srVScrollBar({ 220, 50, 20, 130 });
+	vcr->setScrollInfo(400, 60);
+	vcr->onScroll = [=]{ std::printf("value = %i\n", vcr->getValue()); };
+	win2->addChild(vcr);
 
 	srgui::srRadioButton* rb1 = new srgui::srRadioButton("radio b1!", { 5, 20 });
 	srgui::srRadioButton* rb2 = new srgui::srRadioButton("radio b2!", { 5, 40 });
