@@ -183,14 +183,14 @@ int main(int argc, char** args)
 					p.first = sdlsurf;
 					p.second = { (int)tasks[i].extents.width, (int)tasks[i].extents.height };
 				} else {
-					
-					SDL_LockSurface(surf->first);
-					srgui::srCairoDrawSurface* cds =(srgui::srCairoDrawSurface*) tasks[i].surface;
-					uint8_t* buf = cds->getBuffer();
-					int stride = cds->getStride();
-					std::memcpy(surf->first->pixels, buf, stride*tasks[i].extents.height*4);
-
-					SDL_UnlockSurface(surf->first);
+					//In the demo, the sdl surface and cairo are using the same memory
+					//if not, you'd have to do something like this:
+					//SDL_LockSurface(surf->first);
+					//srgui::srCairoDrawSurface* cds =(srgui::srCairoDrawSurface*) tasks[i].surface;
+					//uint8_t* buf = cds->getBuffer();
+					//int stride = cds->getStride();
+					//std::memcpy(surf->first->pixels, buf, stride*tasks[i].extents.height*4);
+					//SDL_UnlockSurface(surf->first);
 				}
 			}
 			SDL_BlitSurface(surf->first, nullptr, MainWindowSurf, (SDL_Rect*) &tasks[i].extents);

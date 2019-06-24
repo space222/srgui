@@ -313,7 +313,7 @@ void srCairoDrawSurface::setSize(int Width, int Height)
 	this->stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, Width);
 	
 	if( buffer ) delete[] buffer;
-	buffer = new uint8_t[stride*Height*4];
+	buffer = new uint8_t[stride*Height];
 
 	if( ct ) cairo_destroy(ct);
 	cairo_surface_t* sur = cairo_image_surface_create_for_data(buffer, CAIRO_FORMAT_ARGB32, width, height, stride);
