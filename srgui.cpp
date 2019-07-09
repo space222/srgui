@@ -370,6 +370,9 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 				if( ! W->point_in_child(i, {x,y} ) ) continue;
 			
 				srControl* C1 = srgui_data.mouse_over.child = W->getChild(i);
+
+				if( ! C1->visible || ! C1->enabled ) continue;
+
 				srContainer* con = dynamic_cast<srContainer*>(C1);
 				if( con ) 
 				{
