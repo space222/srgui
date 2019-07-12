@@ -369,9 +369,11 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			{
 				if( ! W->point_in_child(i, {x,y} ) ) continue;
 			
-				srControl* C1 = srgui_data.mouse_over.child = W->getChild(i);
+				srControl* C1 = W->getChild(i);
 
-				if( ! C1->visible || ! C1->enabled ) continue;
+				if( !C1->visible || !C1->enabled ) continue;
+		
+				srgui_data.mouse_over.child = C1;
 
 				srContainer* con = dynamic_cast<srContainer*>(C1);
 				if( con ) 
@@ -380,7 +382,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 					C1->getArea(r);
 					W->getArea(wr);
 					srControl* temp = find_in_container(con, { (x - wr.x) - r.x, (y - wr.y) - r.y });
-					if( temp ) srgui_data.mouse_over.child = temp;
+					if( temp && temp->visible && temp->enabled ) srgui_data.mouse_over.child = temp;
 				}
 
 				if( srgui_data.mouse_over.child->getFlags() & SR_CF_REPAINT_ON_HOVER )

@@ -55,6 +55,9 @@ int main(int argc, char** args)
 	srwin->addChild(but1);
 	srgui::srButton* mcl = new srgui::srButton("X", {270,10,20,20}, []{ puts("exiting..."); exit(0); });
 	srwin->addChild(mcl);
+	srgui::srButton* inv = new srgui::srButton("change", {50, 90});
+	srwin->addChild(inv);
+	inv->onClick = [=]{ chk->setVisible(!chk->getVisible()); };
 	
 	srgui::srMenuBar* mbar = new srgui::srMenuBar();
 	srwin->addChild(mbar);
