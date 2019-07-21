@@ -50,17 +50,6 @@ bool point_in_rect(const srRect& r, const srPoint& p)
 		p.y >= r.y && p.y < (r.y+r.height) );
 }
 
-void remove_overlay(srWindow* win)
-{
-	if( win->overlay )
-	{
-		//todo: sub-overlay
-		win->overlay = nullptr;
-		win->setDirty();
-	}
-	return;
-}
-
 srPoint get_control_relative_point(srWindow* win, srControl* c, const srPoint& p)
 {
 	srRect win_area, c_area;
@@ -148,7 +137,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		{
 			if( srgui_data.windows[0] )
 			{
-				remove_overlay(srgui_data.windows[0]);
+				srgui_data.windows[0]->closeOverlay();
 			}
 			return;
 		}
@@ -168,7 +157,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srgui_data.windows[0]->setChildFocus(nullptr);
 
 			// old window gets overlay controls (just menus for now) closed
-			remove_overlay(srgui_data.windows[0]);
+			srgui_data.windows[0]->closeOverlay();
 			
 			// find and pull up the new window
 			for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
@@ -187,7 +176,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		     // if we're not clicking a control, see if its time to
 		     // drag by the caption
 			srgui_data.mouse_l_down.window = srgui_data.windows[0];
-			remove_overlay(srgui_data.windows[0]); // window drag closes menus
+			srgui_data.windows[0]->closeOverlay(); // window drag closes menus
 			srRect r, c;
 			srgui_data.windows[0]->getArea(r);
 			c = r;
@@ -230,10 +219,11 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			srgui_data.windows[0]->setChildFocus(nullptr);
 		}
 	
-		if( srgui_data.windows[0]->overlay && srgui_data.mouse_l_down.child != srgui_data.windows[0]->overlay )
+		if( srgui_data.windows[0]->overlay 
+			&& srgui_data.mouse_l_down.child != dynamic_cast<srControl*>(srgui_data.windows[0]->isPointInOverlay({x,y})) )
 		{
-			remove_overlay(srgui_data.windows[0]);
-		} 
+			srgui_data.windows[0]->closeOverlay();
+		}
 
 		if( srgui_data.mouse_l_down && srgui_data.mouse_l_down.child 
 				&& (srgui_data.mouse_l_down.child->getFlags() & SR_CF_REPAINT_ON_LBUTTON_STATE) )
@@ -261,22 +251,23 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 				if( c )
 				{
 					srWindow* win = srgui_data.mouse_l_down.window;
-					if( win->overlay && srgui_data.mouse_l_down.child == srgui_data.mouse_l_down.window->overlay )
+					if( win->overlay && srgui_data.mouse_l_down.child 
+								== dynamic_cast<srControl*>(win->isPointInOverlay({x,y})) )
 					{
-						srRect &r = srgui_data.windows[0]->overlay->area;
+						srRect &r = srgui_data.mouse_l_down.child->area;
 						c->raiseClickEvent({{x - r.x, y - r.y}, 0,0});
-						remove_overlay(srgui_data.windows[0]);
+						srgui_data.windows[0]->closeOverlay();
 						//srgui_data.mouse_over.clear();    //maybe?
 						event = SR_EVENT_MOUSE_MOVE;
 						data0 = x;
 						data1 = y;
 						data2 = data3 = 0;
 						// need to grab the control under the now-closed overlay
-						// otherwise, the other two options are not taking input
+						// otherwise, the other two options are: not taking input
 						// until the mouse moves again, or crashing when all this 
 						// messes up the input state. easy fix to get proper behavior
-						// but not pretty to fall through to another if.
-						// could just recurse, but hey already here.
+						// but not pretty to fall through to another if. Could just 
+						// refactor to get a control-under-mouse, but hey already here.
 					} else {
 						c->raiseClickEvent({get_control_relative_point(win, 
 								srgui_data.mouse_l_down.child, {x,y}), 0,0});
@@ -335,19 +326,20 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 			return;
 		}
 
-		if( srgui_data.windows[0] && srgui_data.windows[0]->overlay
-				 && point_in_rect(srgui_data.windows[0]->overlay->area, {x,y}) )
+		if(srIOverlay* tmp; srgui_data.windows[0] && srgui_data.windows[0]->overlay
+				 && (tmp = srgui_data.windows[0]->isPointInOverlay({x,y})) )
 		{
 			// Mouse pointer is over the top window's overlay
 			// can set window and child to window and overlay control.
 			// Can't return early, something else might require redraw
 			// because of no longer hovering.
 			srgui_data.mouse_over.window = srgui_data.windows[0];
-			srgui_data.mouse_over.child = srgui_data.windows[0]->overlay;
-			if( srgui_data.windows[0]->overlay->flags & SR_CF_REPAINT_ON_HOVER )
+			srgui_data.mouse_over.child = dynamic_cast<srControl*>(tmp);
+			if( srgui_data.mouse_over.child->flags & SR_CF_REPAINT_ON_HOVER )
 			{
-				srIOverlay* ov = dynamic_cast<srIOverlay*>(old.child);
-				if( ov ) ov->setDirty();
+				tmp->setDirty();
+				//srIOverlay* ov = dynamic_cast<srIOverlay*>(old.child);
+				//if( ov ) ov->setDirty();
 			}
 		} else {
 
@@ -443,17 +435,21 @@ void generateDrawList(std::vector<srRenderTask>& tasks)
 		if( !ovly ) continue;
 		
 		srRect oca;
-		win->overlay->getArea(oca);
+		while( ovly )
+		{		
+			oca = ovly->getArea();
 
-		if( ovly->getDirty() )
-		{
-			uint32_t f = 0;
-			if( point_in_rect( oca, srgui_data.mouse_pos ) ) f |= SR_DIF_MOUSE_OVER;
-			win->overlay->draw(srDrawInfo{ovly->getSurface(), (srDrawInfoFlags) f, 
-					{srgui_data.mouse_pos.x-oca.x, srgui_data.mouse_pos.y-oca.y}, {0,0}});
-			ovly->clearDirty();
+			if( ovly->getDirty() )
+			{
+				uint32_t f = 0;
+				if( point_in_rect( oca, srgui_data.mouse_pos ) ) f |= SR_DIF_MOUSE_OVER;
+				dynamic_cast<srControl*>(ovly)->draw(srDrawInfo{ovly->getSurface(), (srDrawInfoFlags) f, 
+						{srgui_data.mouse_pos.x-oca.x, srgui_data.mouse_pos.y-oca.y}, {0,0}});
+				ovly->clearDirty();
+			}
+			tasks.emplace_back(ovly->getSurface(), oca, ovly->getDirty());
+			ovly = ovly->getSubOverlay();
 		}
-		tasks.emplace_back(ovly->getSurface(), oca, ovly->getDirty());
 	}
 
 	return;

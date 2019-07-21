@@ -23,6 +23,8 @@ public:
 	virtual bool getDirty() =0;
 	virtual void clearDirty() =0;
 	virtual void setDirty() =0;
+	virtual srIOverlay* getSubOverlay() =0;
+	virtual srRect getArea() =0;
 };
 
 struct srEventInfo

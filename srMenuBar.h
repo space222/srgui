@@ -16,7 +16,9 @@ struct srMenuItem
 	std::function<void()> onClick;
 	srMenu* submenu;
 
-	srMenuItem(const std::string& t, const std::function<void()>& fn) : text(t), onClick(fn) {}
+	// if name of item is left blank, it will get filled with name of submenu, otherwise becomes a separator
+	srMenuItem(const std::string& t, const std::function<void()>& fn) : text(t), onClick(fn), submenu(nullptr) {}
+	srMenuItem(const std::string& t, const std::function<void()>& fn, srMenu* sm) : text(t), onClick(fn), submenu(sm) { }
 };
 
 class srDrawSurface;
@@ -32,6 +34,8 @@ public:
 	virtual void setDirty() override { dirty = true; return; }
 	virtual bool getDirty() override { return dirty; }
 	virtual void clearDirty() override { dirty = false; return; }
+	virtual srIOverlay* getSubOverlay() override { return dynamic_cast<srIOverlay*>(submenu); }
+	virtual srRect getArea() override { return area; }
 
 	void setText(const std::string& s)
 	{

@@ -69,6 +69,18 @@ public:
 
 	virtual void setFlags(uint64_t f) override { flags = f; isdirty = true; return; }
 
+	virtual void closeOverlay()
+	{
+		if( overlay )
+		{
+			overlay = nullptr;
+			isdirty = true;
+		}
+		return;
+	}
+
+	virtual srIOverlay* isPointInOverlay(const srPoint&);
+
 	friend void SendEvent(srEventType event, int data0, int data1, int data2, int data3);
 	friend srWindow* CreateWindow(const srRect&, void*, const std::string&);
 	friend void generateDrawList(std::vector<srRenderTask>&);

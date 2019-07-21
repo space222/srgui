@@ -11,10 +11,17 @@ namespace srgui {
 extern srgui::system_data srgui_data;
 
 srMenu::srMenu(const std::string& name, std::initializer_list<srMenuItem> initlist) 
-		: text(name), items(initlist), dirty(true), surface(nullptr), text_layout(nullptr)
+		: text(name), items(initlist), dirty(true), surface(nullptr), text_layout(nullptr), submenu(nullptr)
 {
 	flags = SR_CF_REPAINT_ON_HOVER | SR_CF_REPAINT_ON_LBUTTON_STATE;
 	resize();
+	for( auto& i : items )
+	{
+		if( i.text.size() == 0 && i.submenu )
+		{
+			i.text = i.submenu->text;
+		}
+	}
 	return;
 }
 
@@ -27,9 +34,12 @@ void srMenu::raiseClickEvent(const srEventInfo& event)
 	}
 	if( items[i].text.size() && items[i].onClick )
 	{
-		items[i].onClick();
-		dirty = true;
-		//srgui_data.windows[0]->overlay = nullptr;
+		if( ! items[i].submenu )
+		{
+			items[i].onClick();
+			dirty = true;
+			//srgui_data.windows[0]->overlay = nullptr;
+		}
 	}
 	return;
 }
@@ -43,28 +53,48 @@ void srMenu::draw(const srDrawInfo& info)
 
 	for(uint32_t i = 0; i < items.size(); ++i)
 	{
-		bool selectd = false;
-		if( items[i].text.size() && (info.flags & SR_DIF_MOUSE_OVER) 
-					 && info.mouse_rel.y > 5+(i*20) && info.mouse_rel.y < 5+((i+1)*20) )
+		bool selectd = (info.flags & SR_DIF_MOUSE_OVER) 
+					 && info.mouse_rel.y > 5+(i*20) && info.mouse_rel.y < 5+((i+1)*20);
+
+		if( selectd && items[i].text.size() )
 		{
-			selectd = true;
 			surface->setColor(srgui_data.UIStyle.itemSelectionColor);
 		} else {
 			surface->setColor(srgui_data.UIStyle.windowBackground);
 		}
 
 		surface->drawRectangle({ 2, 5 + (int) i*20, area.width-4, 20 });
-	
+
 		if( items[i].text.size() )
 		{
 			text_layout->setText(items[i].text);
 			surface->setColor( (selectd ? 0xffffff : 0) );
 			surface->drawTextLayout({ 16, 5 + (int) i*20 }, text_layout);
+
+			if( items[i].submenu )
+			{
+				text_layout->setText("\u2BC8");
+				surface->drawTextLayout( { area.width-15, 5 + (int)i*20 }, text_layout );
+				if( selectd && this->submenu != items[i].submenu )
+				{
+					this->submenu = items[i].submenu;
+					this->submenu->setDirty();
+					this->submenu->area.x = this->area.x + this->area.width;
+					this->submenu->area.y = this->area.y + (int)i*20;
+					this->submenu->submenu = nullptr;
+				}
+			}
+
 		} else { // separator will be indicated by a text-less item
 			surface->setColor(0);
 			surface->drawLine( 5, 5 + (int) (i*20 + 10), 5 + (area.width - 10), 5 + (int) (i*20+10), 1);
 			surface->setColor(0xffffff);
 			surface->drawLine( 5, 6 + (int) (i*20 + 10), 5 + (area.width - 10), 6 + (int) (i*20+10), 1);
+		}
+
+		if( selectd && !items[i].submenu )
+		{
+			this->submenu = nullptr;
 		}
 	}
 
@@ -127,10 +157,13 @@ void srMenuBar::raiseClickEvent(const srEventInfo& event)
 			srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
 			win->getArea(winr);
 			win->overlay = dynamic_cast<srControl*>(menus[i]);
+			
 			menus[i]->area.x = winr.x + ((i == 0) ? 0 : menu_offsets[i-1]);
 			menus[i]->area.y = winr.y + area.y + area.height;
+			menus[i]->submenu = nullptr;
 			break;
 		}
+		
 	}
 
 	return;
@@ -157,7 +190,7 @@ void srMenuBar::draw(const srDrawInfo& info)
 	menu_offsets.clear();
 
 	srWindow* win = dynamic_cast<srWindow*>(getToplevelParent());
-
+	
 	for(srMenu* M : menus)
 	{
 		const std::string& txt = M->getText();
@@ -179,6 +212,7 @@ void srMenuBar::draw(const srDrawInfo& info)
 				win->getArea(wr);
 				M->area.x = wr.x + menu_offs;
 				M->area.y = wr.y + area.y + area.height;
+				M->submenu = nullptr;
 			}
 		} 
 
@@ -196,16 +230,12 @@ void srMenuBar::draw(const srDrawInfo& info)
 			surf->drawTextLayout({ menu_offs + 10, origin.y }, text_layout);
 		}
 		
-		//surf->drawRectangle({ menu_offs, origin.y, txtsize.width + 20, area.height });
-		//surf->setColor(0);
-		
 		menu_offs += txtsize.width + 20;
 		menu_offsets.push_back(menu_offs);
 	}
 
 	surf->setColor(0);
 	surf->drawLine( origin.x, area.height-1, origin.x+area.width, area.height-1 );
-
 	return;
 }
 

@@ -82,8 +82,6 @@ void srWindow::draw(const srDrawInfo& info)
 		surface->drawTextLayout(srgui_data.UIStyle.windowCaptionOffset + srPoint{a+3,b}, caption_layout);
 	}
 
-	bool mouse_in_overlay = ( overlay && point_in_rect(overlay->area, srgui_data.mouse_pos) );
-
 	for(uint32_t i = 0; i < children.size(); ++i)
 	{
 		srControl* c = children[i];
@@ -94,7 +92,7 @@ void srWindow::draw(const srDrawInfo& info)
 		di.flags = (int)0;
 		di.parent_offset = {0,0};
 		di.mouse_rel = srgui_data.mouse_pos - srPoint{area.x, area.y};
-		if( !mouse_in_overlay )
+		if( !isPointInOverlay( srgui_data.mouse_pos ) )
 		{
 			if( (srgui_data.mouse_over && srgui_data.mouse_over.child == c) 
 				|| point_in_child(i, srgui_data.mouse_pos) ) { di.flags |= SR_DIF_MOUSE_OVER; }
@@ -128,8 +126,6 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 {
 	srContainer* tainer = dynamic_cast<srContainer*>(contr);
 
-	bool mouse_in_overlay = ( overlay && point_in_rect(overlay->area, srgui_data.mouse_pos) );
-
 	for(uint32_t i = 0; i < tainer->getNumChildren(); ++i)
 	{
 		srControl* c = tainer->getChild(i);
@@ -144,7 +140,7 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 		di.parent_offset = srPoint{area.x, area.y} + info.parent_offset;
 		di.mouse_rel = di.mouse_rel - srPoint{area.x, area.y};
 
-		if( !mouse_in_overlay )
+		if( !isPointInOverlay( srgui_data.mouse_pos ) )
 		{
 			if( (srgui_data.mouse_over && srgui_data.mouse_over.child == c) 
 				|| tainer->point_in_child(i, srgui_data.mouse_pos) ) { di.flags |= SR_DIF_MOUSE_OVER; }
@@ -181,6 +177,19 @@ void srWindow::draw_container(srWindow* win, srControl* contr, const srDrawInfo&
 	}
 
 	return;
+}
+
+srIOverlay* srWindow::isPointInOverlay(const srPoint& p)
+{
+	if( ! overlay ) return nullptr;
+	srIOverlay* ovl = dynamic_cast<srIOverlay*>(overlay);
+	
+	do {
+		if( point_in_rect( ovl->getArea(), p ) ) return ovl;
+		ovl = ovl->getSubOverlay();
+	} while( ovl );
+
+	return nullptr;
 }
 
 srWindow::~srWindow()
