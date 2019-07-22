@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <chrono>
 #include <functional>
 #include <cairo.h>
 #include <pango/pangocairo.h>
@@ -52,8 +53,8 @@ struct srDrawInfo
 	srPoint parent_offset;
 };
 
-/* srControlFlags: for the moment, the top 32bits is reserved for the system and currently used only
- * 	for a control to event repainting and some layout information.
+/* srControlFlags: for the moment, the top 32bits is reserved for the system
+ * 	controlling event repeats, repainting, and some layout information.
  *      The lowest 32bits is available to the widget implementation as general storage.
  */
 
@@ -72,6 +73,7 @@ const uint64_t SR_CF_LAYOUT_FIXED_WIDTH = (1ULL<<49);
 const uint64_t SR_CF_LAYOUT_FIXED_HEIGHT = (1ULL<<48);
 const uint64_t SR_CF_LAYOUT_FIXED_Y_OFFSET = (1ULL<<47);
 const uint64_t SR_CF_LAYOUT_FIXED_X_OFFSET = (1ULL<<46);
+const uint64_t SR_CF_EVENT_CLICK_REPEAT =  (1ULL<<45);
 
 class srWindow;
 class srControl;
@@ -80,6 +82,9 @@ struct srInputTracker
 {
 	srWindow* window;
 	srControl* child;
+	bool isOverlay;
+	std::chrono::system_clock::time_point timestamp;
+
 	operator bool() const { return (window != nullptr); }
 
 	bool operator==(const srInputTracker& b)
@@ -87,7 +92,9 @@ struct srInputTracker
 		return (window!=nullptr) && b && (window == b.window) && (child == b.child);
 	}
 
-	void clear() { window = nullptr; child = nullptr; }
+	void clear() { window = nullptr; child = nullptr; return; }
+
+	void stamp() { timestamp = std::chrono::system_clock::now(); return; }
 };
 
 	/* srStyleFlags top 16bits are unique to the control being styled.

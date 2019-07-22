@@ -73,7 +73,7 @@ void srMenu::draw(const srDrawInfo& info)
 
 			if( items[i].submenu )
 			{
-				text_layout->setText("\u2BC8");
+				text_layout->setText("\u2BC8");  //todo: pull this into a separate loop that draws the arrows
 				surface->drawTextLayout( { area.width-15, 5 + (int)i*20 }, text_layout );
 				if( selectd && this->submenu != items[i].submenu )
 				{
@@ -130,7 +130,7 @@ void srMenu::resize()
 	text_layout->getExtents(tr);
 
 	int width = tr.width + 32;
-	int height = tr.height * items.size() +  10;
+	int height = /* tr.height */ 20 * items.size() + 10;
 	area.width = width;
 	area.height = height;
 
@@ -158,7 +158,7 @@ void srMenuBar::raiseClickEvent(const srEventInfo& event)
 			win->getArea(winr);
 			win->overlay = dynamic_cast<srControl*>(menus[i]);
 			
-			menus[i]->area.x = winr.x + ((i == 0) ? 0 : menu_offsets[i-1]);
+			menus[i]->area.x = 1 + winr.x + ((i == 0) ? 0 : menu_offsets[i-1]);
 			menus[i]->area.y = winr.y + area.y + area.height;
 			menus[i]->submenu = nullptr;
 			break;
