@@ -1,7 +1,7 @@
 SRGUI Todo List
 -----------------
 
-	1. should do vertical scroll bar now that horizontal works better
+	1. rewrite SendEvent
 	2. textfield needs work
 	3. spinner and decimals?
 	4. text area?

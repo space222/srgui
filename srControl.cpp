@@ -15,7 +15,17 @@ srControl* srControl::getToplevelParent()
 
 void srControl::setVisible(bool b)
 {
+	if( visible == b ) return;
 	visible = b;
+	srWindow* W = dynamic_cast<srWindow*>(getToplevelParent());
+	if( W ) W->setDirty();
+	return;
+}
+
+void srControl::setEnabled(bool b)
+{
+	if( enabled == b ) return;
+	enabled = b;
 	srWindow* W = dynamic_cast<srWindow*>(getToplevelParent());
 	if( W ) W->setDirty();
 	return;

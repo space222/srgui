@@ -65,14 +65,14 @@ public:
 	virtual void setChildFocus(srControl* c) { focus = c; return; }
 	virtual srControl* getChildFocus() { return focus; }
 
-	srControl* overlay;
+	srControl* overlay = nullptr;
 
 	virtual void setFlags(uint64_t f) override { flags = f; isdirty = true; return; }
 
 	virtual void closeOverlay()
 	{
 		if( overlay )
-		{
+		{		
 			overlay = nullptr;
 			isdirty = true;
 		}

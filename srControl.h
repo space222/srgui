@@ -66,6 +66,9 @@ public:
 	virtual void setVisible(bool b);
 	virtual bool getVisible() { return visible; }
 
+	virtual void setEnabled(bool b);
+	virtual bool getEnabled() { return enabled; }
+
 	virtual void draw(const srDrawInfo&) =0;
 	virtual srControlType type() =0;
 
@@ -82,7 +85,6 @@ protected:
 	srControl* parent;
 	uint64_t flags;
 };
-
 
 } //end of srgui namespace
 

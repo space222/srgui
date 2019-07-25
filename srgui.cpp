@@ -16,6 +16,8 @@
 namespace srgui {
 
 system_data srgui_data;
+srControl* findControlUnderPoint(srWindow* W, const srPoint& p);
+srWindow* findWindowUnderPoint(const srPoint& p);
 
 void initialize()
 {
@@ -131,6 +133,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		int button = data0;
 		int x = data1;
 		int y = data2;
+		srgui_data.mouse_pos = {x,y};
 
 		// if we're not even over a window, we can ditch early
 		if( ! srgui_data.mouse_over ) 
@@ -176,12 +179,15 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		     // if we're not clicking a control, see if its time to
 		     // drag by the caption
 			srgui_data.mouse_l_down.window = srgui_data.windows[0];
-			srgui_data.windows[0]->closeOverlay(); // window drag closes menus
 			srRect r, c;
 			srgui_data.windows[0]->getArea(r);
 			c = r;
 			c.height = srgui_data.UIStyle.windowCaptionHeight;
-			if( (srgui_data.caption_move = point_in_rect( c, {x,y} )) ) return;
+			if( (srgui_data.caption_move = point_in_rect( c, {x,y} )) ) 
+			{
+				srgui_data.windows[0]->closeOverlay(); // window drag closes menus
+				return;
+			}
 		}
 
 		switch( button )
@@ -220,8 +226,13 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		}
 	
 		if( srgui_data.windows[0]->overlay 
-			&& srgui_data.mouse_l_down.child != dynamic_cast<srControl*>(srgui_data.windows[0]->isPointInOverlay({x,y})) )
+			&& !dynamic_cast<srControl*>(srgui_data.windows[0]->isPointInOverlay({x,y})) )
 		{
+			// if the mouse is down on something that isn't the current overlay, close the overlay.
+			// this used to do a != of mouse_over.child with isPointInOverlay but would fail on the
+			// *second* click of a menu separator item resulting in odd state of any control on the
+			// window underneath. This appears to work now with better logic, but there still must
+			// be a logic error in detecting a mouse hover or click on a menu.
 			srgui_data.windows[0]->closeOverlay();
 		}
 
@@ -240,6 +251,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		int button = data0;
 		int x = data1;
 		int y = data2;
+		srgui_data.mouse_pos = {x,y};
 		srgui_data.caption_move = false;
 
 		switch( button )
@@ -256,18 +268,14 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 					{
 						srRect &r = srgui_data.mouse_l_down.child->area;
 						c->raiseClickEvent({{x - r.x, y - r.y}, 0,0});
-						srgui_data.windows[0]->closeOverlay();
-						//srgui_data.mouse_over.clear();    //maybe?
-						event = SR_EVENT_MOUSE_MOVE;
-						data0 = x;
-						data1 = y;
-						data2 = data3 = 0;
-						// need to grab the control under the now-closed overlay
-						// otherwise, the other two options are: not taking input
-						// until the mouse moves again, or crashing when all this 
-						// messes up the input state. easy fix to get proper behavior
-						// but not pretty to fall through to another if. Could just 
-						// refactor to get a control-under-mouse, but hey already here.
+						
+						if( srWindow* W; !srgui_data.windows[0]->overlay 
+								&& (W = srgui_data.mouse_over.window = findWindowUnderPoint({x,y})) )
+						{  // need to refill what's under the mouse
+							srgui_data.mouse_over.child = findControlUnderPoint(W, {x,y});
+						} else {
+							srgui_data.mouse_over.child = nullptr;
+						}
 					} else {
 						c->raiseClickEvent({get_control_relative_point(win, 
 								srgui_data.mouse_l_down.child, {x,y}), 0,0});
@@ -296,9 +304,7 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 		}
 
 		srgui_data.mouse_l_down.clear();
-		
-		//might want to fall through here to EVENT_MOUSE_MOVE which MUST NOT be
-		//relocated above this IF.
+		return;
 	} //end of mouse up
 
 	if( event == SR_EVENT_MOUSE_MOVE )
@@ -342,55 +348,17 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 				//if( ov ) ov->setDirty();
 			}
 		} else {
-
-			srWindow* W = nullptr;
+			srWindow* W = findWindowUnderPoint({x,y});
 			
-			for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
-			{
-				srWindow* temp = srgui_data.windows[i];
-				srRect r;
-				temp->getArea(r);
-				if( ! point_in_rect(r, {x,y}) ) continue;
-
-				W = temp;
-				break;
-			}
-
-			if( W )
-			for(uint32_t i = 0; i < W->getNumChildren(); ++i)
-			{
-				if( ! W->point_in_child(i, {x,y} ) ) continue;
+			if( W ) srgui_data.mouse_over.child = findControlUnderPoint(W, {x,y});
 			
-				srControl* C1 = W->getChild(i);
-
-				if( !C1->visible || !C1->enabled ) continue;
-		
-				srgui_data.mouse_over.child = C1;
-
-				srContainer* con = dynamic_cast<srContainer*>(C1);
-				if( con ) 
-				{
-					srRect r, wr;
-					C1->getArea(r);
-					W->getArea(wr);
-					srControl* temp = find_in_container(con, { (x - wr.x) - r.x, (y - wr.y) - r.y });
-					if( temp && temp->visible && temp->enabled ) srgui_data.mouse_over.child = temp;
-				}
-
-				if( srgui_data.mouse_over.child->getFlags() & SR_CF_REPAINT_ON_HOVER )
-				{
-					W->setDirty();
-				}
-				break;
-			}
-
 			srgui_data.mouse_over.window = W;
 		}
 
 		if( old && old.child && (old.child->getFlags() & SR_CF_REPAINT_ON_HOVER) )
 		{
 			if( old.child == old.window->overlay )
-			{
+			{    //TODO: ^ need a isPartOfOverlay function, this will only find first overlay(menu).
 				srIOverlay* iov = dynamic_cast<srIOverlay*>(old.child);
 				iov->setDirty();
 			} else {
@@ -410,6 +378,60 @@ void SendEvent(srEventType event, int data0, int data1, int data2, int data3)
 
 
 	return;
+}
+
+srWindow* findWindowUnderPoint(const srPoint& p)
+{
+	srWindow* retval = nullptr;
+
+	for(uint32_t i = 0; i < srgui_data.windows.size(); ++i)
+	{
+		srWindow* temp = srgui_data.windows[i];
+		srRect r;
+		temp->getArea(r);
+		if( ! point_in_rect(r, {p.x,p.y}) ) continue;
+
+		retval = temp;
+		break;
+	}
+
+	return retval;
+}
+
+srControl* findControlUnderPoint(srWindow* W, const srPoint& p)
+{
+	if( ! W ) return nullptr;
+
+	srControl* retval = nullptr;
+
+	for(uint32_t i = 0; i < W->getNumChildren(); ++i)
+	{
+		if( ! W->point_in_child(i, p) ) continue;
+	
+		srControl* C1 = W->getChild(i);
+
+		if( !C1->getVisible() || !C1->getEnabled() ) continue;
+
+		retval = C1;
+
+		srContainer* con = dynamic_cast<srContainer*>(retval);
+		if( con )
+		{
+			srRect r, wr;
+			C1->getArea(r);
+			W->getArea(wr);
+			srControl* temp = find_in_container(con, { (p.x - wr.x) - r.x, (p.y - wr.y) - r.y });
+			if( temp && temp->getVisible() && temp->getEnabled() ) retval = temp;
+		}
+
+		if( retval->getFlags() & SR_CF_REPAINT_ON_HOVER )
+		{
+			W->setDirty();
+		}
+		break;
+	}
+
+	return retval;
 }
 
 void generateDrawList(std::vector<srRenderTask>& tasks)

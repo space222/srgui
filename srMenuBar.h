@@ -128,6 +128,7 @@ public:
 	virtual void add(srMenu* menu)
 	{
 		menus.push_back(menu);
+		menu->setParent(this);
 		srWindow* w = dynamic_cast<srWindow*>(getToplevelParent());
 		if( w ) w->setDirty();
 		return;

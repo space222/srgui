@@ -32,15 +32,16 @@ void srMenu::raiseClickEvent(const srEventInfo& event)
 	{
 		return;
 	}
-	if( items[i].text.size() && items[i].onClick )
+	if( items[i].text.size() )
 	{
 		if( ! items[i].submenu )
 		{
-			items[i].onClick();
+			if( items[i].onClick ) items[i].onClick();
 			dirty = true;
-			//srgui_data.windows[0]->overlay = nullptr;
+			srWindow* W = dynamic_cast<srWindow*>(getToplevelParent());
+			if( W ) W->closeOverlay();
 		}
-	}
+	} //else puts("gettin clicky on non-items");
 	return;
 }
 
@@ -79,6 +80,7 @@ void srMenu::draw(const srDrawInfo& info)
 				{
 					this->submenu = items[i].submenu;
 					this->submenu->setDirty();
+					this->submenu->setParent(parent);
 					this->submenu->area.x = this->area.x + this->area.width;
 					this->submenu->area.y = this->area.y + (int)i*20;
 					this->submenu->submenu = nullptr;
